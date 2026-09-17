@@ -1,5 +1,8 @@
 HELP.md
 target/
+
+# Credenciales reales de desarrollo local (copia de application-local.properties.example) -- nunca se comitea.
+application-local.properties
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

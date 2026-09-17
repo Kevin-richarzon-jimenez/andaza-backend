@@ -1,0 +1,7 @@
+# Copia este archivo como "application-local.properties" (sin el .example) en esta misma
+# carpeta, y completalo con tus credenciales reales. Ese archivo sin .example nunca se
+# comitea (esta en .gitignore) -- por eso es seguro poner ahi la contraseña real.
+
+spring.datasource.url=jdbc:postgresql://db.TU-PROJECT-REF.supabase.co:5432/postgres?sslmode=require
+spring.datasource.username=postgres
+spring.datasource.password=TU-CONTRASENA-REAL

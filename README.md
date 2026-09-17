@@ -11,6 +11,7 @@ Repo poly-repo: este es el backend. El frontend (React) vive aparte, en [andanza
 - **Spring Data JPA** + driver de **PostgreSQL** — la base de datos es Postgres vía [Supabase](https://supabase.com), consumida directo por JDBC/JPA (sin usar la API/Auth propia de Supabase)
 - **Spring Boot Validation** — validación de datos de entrada
 - **Spring Boot DevTools** — reinicio automático al guardar cambios
+- **Spring Boot Actuator** — expone `/actuator/health` para verificar que la app (y su conexión a la base de datos) está funcionando
 - **Lombok** — reduce el boilerplate de getters/setters/constructores
 
 ## Requisitos
@@ -28,7 +29,15 @@ DB_URL=jdbc:postgresql://localhost:5432/andanza DB_USERNAME=postgres DB_PASSWORD
 
 Si no pasás nada, por defecto intenta conectarse a `localhost:5432/andanza` con usuario/contraseña `postgres`/`postgres` — sirve para tener Postgres corriendo local (por ejemplo con Docker), o reemplazá esas variables con las credenciales reales de Supabase cuando las tengan.
 
-La app levanta en `http://localhost:8080` (configurable con la variable `PORT`).
+**Alternativa para no repetir el comando largo cada vez:** copiá `src/main/resources/application-local.properties.example` como `application-local.properties` (en la misma carpeta) y completalo con tus credenciales reales — ese archivo está en `.gitignore`, nunca se comitea. Después corré:
+
+```
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+y usa automáticamente esos valores en vez de los del comando de variables de entorno.
+
+La app levanta en `http://localhost:8080` (configurable con la variable `PORT`). Para confirmar que la conexión a la base de datos funciona, abrí `http://localhost:8080/actuator/health` — debería responder `{"status":"UP", ...}` con el detalle de la base de datos incluido.
 
 ## Compilar
 
