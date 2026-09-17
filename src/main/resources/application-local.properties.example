@@ -1,7 +1,34 @@
-# Copia este archivo como "application-local.properties" (sin el .example) en esta misma
-# carpeta, y completalo con tus credenciales reales. Ese archivo sin .example nunca se
-# comitea (esta en .gitignore) -- por eso es seguro poner ahi la contraseña real.
+# =============================================================================
+# Como usar este archivo
+# =============================================================================
+# 1. Copialo en esta misma carpeta con el nombre "application-local.properties"
+#    (sin el ".example" al final).
+# 2. Completa el host, el usuario y la contrasena reales en las lineas de abajo.
+# 3. Guardalo. Ese archivo nuevo NUNCA se comitea (esta en .gitignore) -- por eso
+#    es el unico lugar seguro para poner la contrasena real.
+# 4. Corre la app con: ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+#
+# Estas son las mismas variables (DB_URL, DB_USERNAME, DB_PASSWORD) que
+# application.properties ya espera recibir -- aca se las damos desde un archivo
+# en vez de tener que escribirlas en el comando cada vez.
+#
+# Importante: esto es la conexion a la base de datos Postgres de Supabase.
+# NO es lo mismo que las "API Keys" de Supabase (esas estan en Settings -> API y
+# no se usan en este proyecto).
+#
+# De donde salen los datos: en tu proyecto de Supabase, boton "Connect" -> "Direct
+# connection" -> pestana "Session pooler" (NO la pestana "Direct connection": esa
+# requiere IPv6 y la mayoria de redes no lo soportan -- da UnknownHostException).
+# Supabase te muestra un string como este:
+#   postgresql://postgres.[YOUR-DB-ID]:[YOUR-PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres
+#
+# De ese string sacas los tres valores de abajo, separados. Ojo con el usuario:
+# en el pooler NO es solo "postgres", lleva tu id de proyecto pegado
+# ("postgres.[YOUR-DB-ID]"). El host (la parte "aws-0-us-east-2.pooler.supabase.com")
+# tambien varia segun la region de tu proyecto -- copia el que te muestra Supabase,
+# no el de este ejemplo.
+# =============================================================================
 
-spring.datasource.url=jdbc:postgresql://db.TU-PROJECT-REF.supabase.co:5432/postgres?sslmode=require
-spring.datasource.username=postgres
-spring.datasource.password=TU-CONTRASENA-REAL
+DB_URL=jdbc:postgresql://[YOUR-POOLER-HOST]:5432/postgres?sslmode=require
+DB_USERNAME=postgres.[YOUR-DB-ID]
+DB_PASSWORD=[YOUR-PASSWORD]
