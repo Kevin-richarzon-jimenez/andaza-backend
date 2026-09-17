@@ -37,6 +37,8 @@ Si no pasás nada, por defecto intenta conectarse a `localhost:5432/andanza` con
 
 y usa automáticamente esos valores en vez de los del comando de variables de entorno.
 
+**Conectando a Supabase:** sacá las credenciales del **Session Pooler**, no de la conexión directa — en el dashboard del proyecto, botón "Connect" → "Direct connection" → pestaña "Session pooler" (la conexión directa requiere IPv6, que la mayoría de redes no tiene; el detalle completo, con ejemplo, está en `application-local.properties.example`).
+
 La app levanta en `http://localhost:8080` (configurable con la variable `PORT`). Para confirmar que la conexión a la base de datos funciona, abrí `http://localhost:8080/actuator/health` — debería responder `{"status":"UP", ...}` con el detalle de la base de datos incluido.
 
 ## Compilar
@@ -45,6 +47,10 @@ La app levanta en `http://localhost:8080` (configurable con la variable `PORT`).
 ./mvnw clean package
 ```
 Genera un `.jar` ejecutable en `target/`.
+
+## Despliegue
+
+Todavía no está desplegado (pendiente elegir host — algo con soporte para Java, ej. Render o Railway; Vercel no sirve para esto, es para el frontend). Cuando se despliegue, probar la conexión a Supabase por **conexión directa** primero, no por Session Pooler — es la opción recomendada por Supabase para apps persistentes, y a diferencia del desarrollo local, es probable que el host en la nube sí tenga soporte IPv6. Si falla, recién ahí usar Session Pooler como en local.
 
 ## Estructura
 
