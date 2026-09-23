@@ -20,14 +20,14 @@ public class ContactController {
         this.contactService = contactService;
     }
 
-    @PostMapping("/contact")
+    @PostMapping("/contact-messages")
     public ResponseEntity<MessageResponse> sendMessage(@Valid @RequestBody ContactRequest request) {
         String ticketId = contactService.sendMessage(request);
         return ResponseEntity.status(201).body(new MessageResponse(
                 "Gracias por escribirnos. Tu radicado es " + ticketId + ", te responderemos pronto."));
     }
 
-    @PostMapping("/newsletter")
+    @PostMapping("/newsletter-subscriptions")
     public ResponseEntity<MessageResponse> subscribe(@Valid @RequestBody NewsletterRequest request) {
         contactService.subscribe(request);
         return ResponseEntity.status(201).body(new MessageResponse("¡Te suscribiste correctamente al boletín!"));

@@ -64,7 +64,7 @@ Todos los endpoints cuelgan de `/api/v1`. El detalle de cada uno (campos, valida
 | Direcciones | `POST /account/addresses`, `PUT /account/addresses/{id}` |
 | Favoritos | `POST /favorites` |
 | Comentarios | `POST /comments` |
-| Contacto | `POST /contact`, `POST /newsletter` |
+| Contacto | `POST /contact-messages`, `POST /newsletter-subscriptions` |
 | Administración | `POST /admin/products`, `POST` y `DELETE /admin/categories`, `PUT /admin/inventory`, `PUT /admin/users/{id}`, `PUT /admin/comments/{id}` |
 
 ### Formato de errores
