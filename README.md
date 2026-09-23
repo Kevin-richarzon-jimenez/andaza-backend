@@ -2,60 +2,121 @@
 
 API REST del e-commerce de calzado Andanza. Proyecto de Sena.
 
-Repo poly-repo: este es el backend. El frontend (React) vive aparte, en [andanza-frontend](https://github.com/Kevin-richarzon-jimenez/andanza-frontend) — se comunican solo por API, no comparten código ni repo.
+Este repositorio es el backend. El frontend (React) vive aparte, en [andanza-frontend](https://github.com/Kevin-richarzon-jimenez/andanza-frontend), y ambos se comunican solo por API.
 
 ## Stack
 
 - **Java 21** (LTS)
-- **Spring Boot 4.1.1** + Maven (con Maven Wrapper, no hace falta tener Maven instalado)
-- **Spring Data JPA** + driver de **PostgreSQL** — la base de datos es Postgres vía [Supabase](https://supabase.com), consumida directo por JDBC/JPA (sin usar la API/Auth propia de Supabase)
-- **Spring Boot Validation** — validación de datos de entrada
-- **Spring Boot DevTools** — reinicio automático al guardar cambios
-- **Spring Boot Actuator** — expone `/actuator/health` para verificar que la app (y su conexión a la base de datos) está funcionando
-- **Lombok** — reduce el boilerplate de getters/setters/constructores
+- **Spring Boot 4.1.1** con Maven (incluye Maven Wrapper: no hace falta instalar Maven)
+- **Spring Web** — API REST
+- **Spring Data JPA** + driver de **PostgreSQL** — la base de datos es Postgres, alojada en [Supabase](https://supabase.com) y consumida directamente por JDBC/JPA
+- **Spring Boot Validation** — validación de los datos de entrada
+- **Spring Boot Actuator** — health check en `/actuator/health`
+- **springdoc-openapi** — documentación interactiva de la API (Swagger UI)
+- **Lombok** y **DevTools**
 
 ## Requisitos
 
 - Java 21
-- Una base de datos Postgres corriendo (local, o las credenciales de Supabase del proyecto)
+- Una base de datos Postgres: local o la del proyecto en Supabase
 
-## Correr en desarrollo
+## Configuración
 
-Necesitás pasarle la conexión a la base de datos por variables de entorno (nunca hardcodeadas en el código):
+La conexión a la base de datos se define con tres variables: `DB_URL`, `DB_USERNAME` y `DB_PASSWORD`. Sin configurar nada, la app usa `localhost:5432/andanza` con usuario y contraseña `postgres`, lo que sirve para un Postgres local (por ejemplo, en Docker).
 
-```
-DB_URL=jdbc:postgresql://localhost:5432/andanza DB_USERNAME=postgres DB_PASSWORD=postgres ./mvnw spring-boot:run
-```
+Para conectarse a otra base, como la de Supabase, se crea un perfil local:
 
-Si no pasás nada, por defecto intenta conectarse a `localhost:5432/andanza` con usuario/contraseña `postgres`/`postgres` — sirve para tener Postgres corriendo local (por ejemplo con Docker), o reemplazá esas variables con las credenciales reales de Supabase cuando las tengan.
+1. Copiar `src/main/resources/application-local.properties.example` como `src/main/resources/application-local.properties`. Este archivo está en `.gitignore`: nunca se sube al repositorio.
+2. Completar `DB_URL`, `DB_USERNAME` y `DB_PASSWORD` con las credenciales reales.
 
-**Alternativa para no repetir el comando largo cada vez:** copiá `src/main/resources/application-local.properties.example` como `application-local.properties` (en la misma carpeta) y completalo con tus credenciales reales — ese archivo está en `.gitignore`, nunca se comitea. Después corré:
+Si el sistema ya tiene definida alguna de esas variables de entorno, esa tiene prioridad sobre el archivo.
+
+**Supabase:** usar las credenciales del *Session Pooler*, que se encuentran en el dashboard del proyecto: botón **Connect** → **Direct connection** → pestaña **Session pooler**. La conexión directa solo funciona por IPv6, que la mayoría de las redes no soporta. El archivo de ejemplo incluye el paso a paso.
+
+## Ejecutar
 
 ```
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-y usa automáticamente esos valores en vez de los del comando de variables de entorno.
+La API queda en `http://localhost:8080` (el puerto se cambia con la variable `PORT`). Si las credenciales se pasan por variables de entorno en lugar del perfil local, se omite `-Dspring-boot.run.profiles=local`.
 
-**Conectando a Supabase:** sacá las credenciales del **Session Pooler**, no de la conexión directa — en el dashboard del proyecto, botón "Connect" → "Direct connection" → pestaña "Session pooler" (la conexión directa requiere IPv6, que la mayoría de redes no tiene; el detalle completo, con ejemplo, está en `application-local.properties.example`).
-
-La app levanta en `http://localhost:8080` (configurable con la variable `PORT`). Para confirmar que la conexión a la base de datos funciona, abrí `http://localhost:8080/actuator/health` — debería responder `{"status":"UP", ...}` con el detalle de la base de datos incluido.
+- Estado de la app y de la conexión a la base de datos: `http://localhost:8080/actuator/health`
+- Documentación interactiva de la API (Swagger UI): `http://localhost:8080/swagger-ui.html`
 
 ## Compilar
 
 ```
 ./mvnw clean package
 ```
+
 Genera un `.jar` ejecutable en `target/`.
 
-## Despliegue
+## API
 
-Todavía no está desplegado (pendiente elegir host — algo con soporte para Java, ej. Render o Railway; Vercel no sirve para esto, es para el frontend). Cuando se despliegue, probar la conexión a Supabase por **conexión directa** primero, no por Session Pooler — es la opción recomendada por Supabase para apps persistentes, y a diferencia del desarrollo local, es probable que el host en la nube sí tenga soporte IPv6. Si falla, recién ahí usar Session Pooler como en local.
+Todos los endpoints cuelgan de `/api/v1`. El detalle de cada uno (campos, validaciones y respuestas) está en Swagger UI.
+
+| Recurso | Endpoints |
+|---|---|
+| Catálogo | `GET /catalog/products` (filtros por query params) |
+| Carrito | `POST /cart/totals` |
+| Autenticación | `POST /auth/login`, `POST /auth/register`, `PUT /auth/password` |
+| Direcciones | `POST /account/addresses`, `PUT /account/addresses/{id}` |
+| Favoritos | `POST /favorites` |
+| Comentarios | `POST /comments` |
+| Contacto | `POST /contact`, `POST /newsletter` |
+| Administración | `POST /admin/products`, `POST` y `DELETE /admin/categories`, `PUT /admin/inventory`, `PUT /admin/users/{id}`, `PUT /admin/comments/{id}` |
+
+### Formato de errores
+
+Todos los errores responden con la misma estructura. `errors` lista los campos con problemas y va vacío cuando el error no corresponde a un campo puntual.
+
+```json
+{
+  "timestamp": "2026-09-22T20:01:58.970Z",
+  "status": 400,
+  "error": "Datos inválidos",
+  "message": "Revisa los campos del formulario",
+  "errors": [
+    { "field": "email", "message": "El correo es obligatorio" }
+  ]
+}
+```
+
+| Código | Cuándo |
+|---|---|
+| `400` | Datos inválidos o cuerpo que no es JSON |
+| `404` | La ruta no existe |
+| `405` | Método HTTP no permitido en esa ruta |
+| `415` | Tipo de contenido no soportado |
+| `422` | Regla de negocio incumplida (por ejemplo, una talla no disponible) |
+| `500` | Error inesperado |
 
 ## Estructura
+
+El código está organizado por dominio: cada carpeta trae su controller, service y DTOs juntos.
 
 ```
 src/main/java/com/andanza/backend/
 ├── AndanzaBackendApplication.java   punto de entrada
-└── ...                              controllers/, services/, repositories/, models/ se agregan a medida que se construye la API
+├── auth/, cart/, catalog/, ...      un paquete por dominio
+├── admin/<dominio>/                 endpoints de administración, agrupados por dominio
+├── exception/                       BusinessException, GlobalExceptionHandler, ErrorResponse
+├── validation/                      validaciones personalizadas reutilizables
+├── common/                          DTOs usados por más de un dominio
+└── config/                          configuración de la app (OpenAPI)
 ```
+
+## Convenciones
+
+- El código (clases, variables, archivos, endpoints) va en inglés; los mensajes que ve el usuario, en español.
+- Los endpoints van en kebab-case bajo `/api/v1`; los recursos, en plural y sin verbos (el verbo es el método HTTP). Los paquetes de dominio van en singular.
+- Las ramas llevan prefijo por tipo (`feature/`, `fix/`, `refactor/`, `chore/`, `docs/`) y no se comitea directo a `main`: todo cambio entra por pull request.
+- Los commits siguen [Conventional Commits](https://www.conventionalcommits.org/) y los pull requests se mergean con *Squash and merge*.
+
+## Roadmap
+
+- Persistencia en Postgres con Spring Data JPA (hoy los datos de ejemplo viven en memoria; los puntos pendientes están marcados con `TODO (BD)` en el código).
+- Autenticación y autorización de los endpoints (marcado con `TODO (auth)`).
+- Tests de la lógica de negocio.
+- Despliegue en un host con soporte para Java (por ejemplo, Render o Railway). Con Supabase, probar primero la conexión directa si el host tiene IPv6; si no, usar Session Pooler.
