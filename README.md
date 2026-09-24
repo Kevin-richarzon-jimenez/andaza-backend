@@ -29,6 +29,7 @@ La app necesita estas variables (las que no tienen valor por defecto son obligat
 | Variable | Para qué sirve | Por defecto |
 |---|---|---|
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | Conexión a la base de datos | `localhost:5432/andanza`, `postgres` / `postgres` |
+| `DB_POOL_SIZE` | Conexiones máximas a la base por instancia. El Session Pooler de Supabase admite pocas en total (15 en el plan gratis), compartidas por la instancia desplegada y las de cada integrante en local | `5` |
 | `JWT_SECRET` | Secreto con el que se firman los tokens de sesión (mínimo 32 caracteres) | — (obligatoria) |
 | `CORS_ALLOWED_ORIGINS` | Orígenes del frontend autorizados, separados por coma | `http://localhost:5173` |
 | `JWT_EXPIRATION_MINUTES` | Duración de la sesión | `120` |
@@ -173,6 +174,22 @@ Antes de desplegar:
 - Si hay un proxy delante, configurar `server.forward-headers-strategy=framework` para que el límite de intentos vea la dirección real de cada cliente.
 - En el frontend, tratar el token como una llave: no mostrarlo, no registrarlo en la consola y no insertar contenido de usuarios como HTML.
 
+## Despliegue
+
+El `Dockerfile` compila con el Maven Wrapper y ejecuta con Java 21, así que sirve en cualquier host que corra contenedores. Para el proyecto se usa [Render](https://render.com) con el plan gratuito:
+
+1. **New → Web Service**, conectar este repositorio, *Language: Docker* y plan *Free*. Cada merge a `main` despliega solo.
+2. **Health Check Path:** `/actuator/health`.
+3. **Variables de entorno** (las de la sección Configuración):
+   - `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`: los del *Session Pooler* de Supabase, los mismos que en desarrollo.
+   - `JWT_SECRET`: uno propio de producción, distinto al de desarrollo.
+   - `CORS_ALLOWED_ORIGINS`: la URL del frontend (por ejemplo, `https://mi-tienda.vercel.app`).
+   - `SWAGGER_ENABLED=false`.
+   - `SERVER_FORWARD_HEADERS_STRATEGY=framework`, para que el límite de intentos de login vea la dirección real de cada cliente detrás del proxy de Render.
+4. Con la URL que asigne Render, poner `VITE_API_URL` en el frontend (`https://<servicio>.onrender.com/api/v1`) y volver a desplegarlo.
+
+El plan gratuito de Render se duerme tras unos 15 minutos sin tráfico y la primera petición después tarda cerca de un minuto. Tiene 512 MB de memoria: el `Dockerfile` limita la JVM para ese tamaño (con esos límites la suite completa de pruebas de la API consumió un máximo de unos 320 MB). Un monitor externo, como UptimeRobot, que consulte `/actuator/health` cada 10 minutos lo mantiene despierto y, como esa consulta usa la base, evita que Supabase pause el proyecto por inactividad.
+
 ## Estructura
 
 El código está organizado por dominio: cada carpeta trae su controller, service, entidades y DTOs juntos.
@@ -206,4 +223,3 @@ src/main/resources/db/migration/     migraciones SQL de Flyway
 - Datos de producto que el frontend ya muestra: imágenes, género, descuentos y detalles (material, suela, cuidado).
 - Cupones y costo de envío configurables (hoy son valores fijos en `CartService`).
 - Tests de integración de los endpoints.
-- Despliegue en un host con soporte para Java (por ejemplo, Render o Railway). Con Supabase, probar primero la conexión directa si el host tiene IPv6; si no, usar Session Pooler.
