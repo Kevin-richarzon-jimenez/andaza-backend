@@ -2,10 +2,14 @@ package com.andanza.backend.admin.product;
 
 import com.andanza.backend.catalog.Category;
 import com.andanza.backend.catalog.CategoryRepository;
+import com.andanza.backend.catalog.Product;
 import com.andanza.backend.catalog.ProductRepository;
 import com.andanza.backend.catalog.ProductResponse;
+import com.andanza.backend.catalog.ProductVariantRepository;
 import com.andanza.backend.catalog.ProductVariantResponse;
 import com.andanza.backend.exception.BusinessException;
+import com.andanza.backend.exception.ConflictException;
+import com.andanza.backend.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,10 +37,34 @@ class AdminProductServiceTest {
     @Mock
     private CategoryRepository categoryRepository;
 
+    @Mock
+    private ProductVariantRepository variantRepository;
+
     @InjectMocks
     private AdminProductService adminProductService;
 
     private final UUID categoryId = UUID.randomUUID();
+    private final UUID productId = UUID.randomUUID();
+
+    private Product existingProduct() {
+        Category oldCategory = new Category();
+        oldCategory.setId(UUID.randomUUID());
+        oldCategory.setName("Deportivo");
+        Product product = new Product();
+        product.setId(productId);
+        product.setName("Runner Air");
+        product.setBrand("Andanza");
+        product.setDescription("Tenis ligeros para correr");
+        product.setPrice(new BigDecimal("289900"));
+        product.setCategory(oldCategory);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        return product;
+    }
+
+    private AdminProductUpdateRequest updateRequest() {
+        return new AdminProductUpdateRequest("  Runner Air 2 ", "Andanza", categoryId, new BigDecimal("299900"),
+                "Tenis ligeros con nueva suela");
+    }
 
     private AdminProductRequest request(ProductVariantRequest... variants) {
         return new AdminProductRequest("Bota QA", "Andanza", categoryId, new BigDecimal("199900"),
@@ -87,5 +115,84 @@ class AdminProductServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("categoría");
         verify(productRepository, never()).save(any());
+    }
+
+    @Test
+    void updatesTheProductDataAndTrimsTheName() {
+        existingProduct();
+        categoryExists();
+
+        ProductResponse response = adminProductService.update(productId, updateRequest());
+
+        assertThat(response.name()).isEqualTo("Runner Air 2");
+        assertThat(response.price()).isEqualByComparingTo("299900");
+        assertThat(response.category().name()).isEqualTo("Botas");
+    }
+
+    @Test
+    void updatingAMissingProductIsNotFound() {
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> adminProductService.update(productId, updateRequest()))
+                .isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void updatingWithACategoryThatDoesNotExistIsABusinessRuleError() {
+        existingProduct();
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> adminProductService.update(productId, updateRequest()))
+                .isInstanceOf(BusinessException.class)
+                .isNotInstanceOf(NotFoundException.class)
+                .hasMessageContaining("categoría");
+    }
+
+    @Test
+    void deletesAnExistingProduct() {
+        Product product = existingProduct();
+
+        adminProductService.delete(productId);
+
+        verify(productRepository).delete(product);
+    }
+
+    @Test
+    void deletingAMissingProductIsNotFound() {
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> adminProductService.delete(productId)).isInstanceOf(NotFoundException.class);
+        verify(productRepository, never()).delete(any(Product.class));
+    }
+
+    @Test
+    void addsAVariantToAnExistingProduct() {
+        existingProduct();
+        when(variantRepository.existsByProductIdAndColorIgnoreCaseAndSize(productId, "Negro", "40")).thenReturn(false);
+        when(variantRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ProductVariantResponse response = adminProductService.addVariant(productId, new ProductVariantRequest(" Negro ", " 40 ", 5));
+
+        assertThat(response.color()).isEqualTo("Negro");
+        assertThat(response.size()).isEqualTo("40");
+        assertThat(response.stock()).isEqualTo(5);
+    }
+
+    @Test
+    void rejectsAVariantThatAlreadyExistsInTheProduct() {
+        existingProduct();
+        when(variantRepository.existsByProductIdAndColorIgnoreCaseAndSize(productId, "Negro", "40")).thenReturn(true);
+
+        assertThatThrownBy(() -> adminProductService.addVariant(productId, new ProductVariantRequest("Negro", "40", 5)))
+                .isInstanceOf(ConflictException.class);
+        verify(variantRepository, never()).save(any());
+    }
+
+    @Test
+    void addingAVariantToAMissingProductIsNotFound() {
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> adminProductService.addVariant(productId, new ProductVariantRequest("Negro", "40", 5)))
+                .isInstanceOf(NotFoundException.class);
     }
 }

@@ -1,6 +1,10 @@
 package com.andanza.backend.contact;
 
+import com.andanza.backend.catalog.PageResponse;
+import com.andanza.backend.common.PageParams;
 import com.andanza.backend.exception.ConflictException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +31,12 @@ public class ContactService {
         message.setMessage(request.message().trim());
         contactMessageRepository.save(message);
         return "TCK-" + message.getId().toString().substring(0, 8).toUpperCase();
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<ContactMessageResponse> listMessages(PageParams params) {
+        Pageable pageable = params.toPageable(Sort.by("createdAt").descending().and(Sort.by("id")));
+        return PageResponse.from(contactMessageRepository.findAll(pageable).map(ContactMessageResponse::from));
     }
 
     @Transactional

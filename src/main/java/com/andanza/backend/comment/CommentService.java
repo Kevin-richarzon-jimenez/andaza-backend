@@ -1,11 +1,16 @@
 package com.andanza.backend.comment;
 
+import com.andanza.backend.catalog.PageResponse;
 import com.andanza.backend.catalog.Product;
 import com.andanza.backend.catalog.ProductRepository;
+import com.andanza.backend.common.PageParams;
 import com.andanza.backend.exception.BusinessException;
 import com.andanza.backend.exception.NotFoundException;
 import com.andanza.backend.user.User;
 import com.andanza.backend.user.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +56,16 @@ public class CommentService {
         }
         return commentRepository.findByProductIdAndStatusOrderByCreatedAtDesc(productId, CommentStatus.PUBLISHED)
                 .stream().map(CommentResponse::from).toList();
+    }
+
+    // Para administración: todos los comentarios, del más reciente al más antiguo; status es un filtro opcional.
+    @Transactional(readOnly = true)
+    public PageResponse<CommentResponse> listAll(CommentStatus status, PageParams params) {
+        Pageable pageable = params.toPageable(Sort.by("createdAt").descending().and(Sort.by("id")));
+        Page<Comment> page = status == null
+                ? commentRepository.findAll(pageable)
+                : commentRepository.findByStatus(status, pageable);
+        return PageResponse.from(page.map(CommentResponse::from));
     }
 
     @Transactional(readOnly = true)
