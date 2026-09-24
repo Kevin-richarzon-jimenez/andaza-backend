@@ -1,34 +1,41 @@
 # =============================================================================
-# Como usar este archivo
+# Cómo usar este archivo
 # =============================================================================
-# 1. Copialo en esta misma carpeta con el nombre "application-local.properties"
+# 1. Cópialo en esta misma carpeta con el nombre "application-local.properties"
 #    (sin el ".example" al final).
-# 2. Completa el host, el usuario y la contrasena reales en las lineas de abajo.
-# 3. Guardalo. Ese archivo nuevo NUNCA se comitea (esta en .gitignore) -- por eso
-#    es el unico lugar seguro para poner la contrasena real.
+# 2. Completa los valores reales en las líneas de abajo.
+# 3. Guárdalo. Ese archivo nuevo NUNCA se comitea (está en .gitignore): por eso
+#    es el único lugar seguro para poner contraseñas y secretos reales.
 # 4. Corre la app con: ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 #
-# Estas son las mismas variables (DB_URL, DB_USERNAME, DB_PASSWORD) que
-# application.properties ya espera recibir -- aca se las damos desde un archivo
-# en vez de tener que escribirlas en el comando cada vez.
+# Estas son las mismas variables que application.properties ya espera recibir:
+# aquí se las damos desde un archivo en vez de escribirlas en el comando cada vez.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Base de datos (Postgres de Supabase)
+# -----------------------------------------------------------------------------
+# Esto es la conexión a la base de datos Postgres. NO es lo mismo que las
+# "API Keys" de Supabase (esas están en Settings -> API y no se usan en este proyecto).
 #
-# Importante: esto es la conexion a la base de datos Postgres de Supabase.
-# NO es lo mismo que las "API Keys" de Supabase (esas estan en Settings -> API y
-# no se usan en este proyecto).
-#
-# De donde salen los datos: en tu proyecto de Supabase, boton "Connect" -> "Direct
-# connection" -> pestana "Session pooler" (NO la pestana "Direct connection": esa
-# requiere IPv6 y la mayoria de redes no lo soportan -- da UnknownHostException).
+# De dónde salen los datos: en tu proyecto de Supabase, botón "Connect" -> "Direct
+# connection" -> pestaña "Session pooler" (NO la pestaña "Direct connection": esa
+# requiere IPv6 y la mayoría de redes no lo soportan -- da UnknownHostException).
 # Supabase te muestra un string como este:
 #   postgresql://postgres.[YOUR-DB-ID]:[YOUR-PASSWORD]@aws-0-us-east-2.pooler.supabase.com:5432/postgres
 #
 # De ese string sacas los tres valores de abajo, separados. Ojo con el usuario:
-# en el pooler NO es solo "postgres", lleva tu id de proyecto pegado
+# en el pooler NO es solo "postgres", lleva el id de tu proyecto pegado
 # ("postgres.[YOUR-DB-ID]"). El host (la parte "aws-0-us-east-2.pooler.supabase.com")
-# tambien varia segun la region de tu proyecto -- copia el que te muestra Supabase,
+# también varía según la región del proyecto: copia el que te muestra Supabase,
 # no el de este ejemplo.
-# =============================================================================
-
 DB_URL=jdbc:postgresql://[YOUR-POOLER-HOST]:5432/postgres?sslmode=require
 DB_USERNAME=postgres.[YOUR-DB-ID]
 DB_PASSWORD=[YOUR-PASSWORD]
+
+# -----------------------------------------------------------------------------
+# Sesiones (JWT)
+# -----------------------------------------------------------------------------
+# Secreto con el que se firman los tokens de sesión. Es obligatorio y debe tener al
+# menos 32 caracteres. Genera uno aleatorio con:  openssl rand -base64 48
+JWT_SECRET=[YOUR-JWT-SECRET]

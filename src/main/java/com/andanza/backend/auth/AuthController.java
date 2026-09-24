@@ -1,8 +1,11 @@
 package com.andanza.backend.auth;
 
+import com.andanza.backend.common.MessageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,13 +30,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        AuthResponse response = authService.register(request);
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(201).body(authService.register(request));
     }
 
     @PutMapping("/password")
-    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
-        authService.changePassword(request);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<MessageResponse> changePassword(@AuthenticationPrincipal Jwt jwt,
+                                                          @Valid @RequestBody ChangePasswordRequest request) {
+        authService.changePassword(CurrentUser.id(jwt), request);
+        return ResponseEntity.ok(new MessageResponse("Contraseña actualizada correctamente"));
     }
 }

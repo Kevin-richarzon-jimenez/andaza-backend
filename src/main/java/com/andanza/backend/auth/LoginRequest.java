@@ -2,6 +2,7 @@ package com.andanza.backend.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record LoginRequest(
         @NotBlank(message = "El correo es obligatorio")
@@ -9,6 +10,7 @@ public record LoginRequest(
         String email,
 
         @NotBlank(message = "La contraseña es obligatoria")
+        @Size(max = 72, message = "La contraseña no puede superar los 72 caracteres")
         String password
 ) {
 }
