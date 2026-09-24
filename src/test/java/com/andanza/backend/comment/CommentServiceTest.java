@@ -1,7 +1,9 @@
 package com.andanza.backend.comment;
 
+import com.andanza.backend.catalog.PageResponse;
 import com.andanza.backend.catalog.Product;
 import com.andanza.backend.catalog.ProductRepository;
+import com.andanza.backend.common.PageParams;
 import com.andanza.backend.exception.NotFoundException;
 import com.andanza.backend.user.User;
 import com.andanza.backend.user.UserRepository;
@@ -10,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +21,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -81,6 +87,29 @@ class CommentServiceTest {
         when(productRepository.existsById(productId)).thenReturn(false);
 
         assertThatThrownBy(() -> commentService.listPublished(productId)).isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void theAdminListShowsEveryStatusWhenNoFilterIsGiven() {
+        when(commentRepository.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(commentWith(CommentStatus.PUBLISHED), commentWith(CommentStatus.HIDDEN))));
+
+        PageResponse<CommentResponse> page = commentService.listAll(null, new PageParams(null, null));
+
+        assertThat(page.content()).extracting(CommentResponse::status)
+                .containsExactly(CommentStatus.PUBLISHED, CommentStatus.HIDDEN);
+        assertThat(page.totalElements()).isEqualTo(2);
+    }
+
+    @Test
+    void theAdminListCanFilterByStatus() {
+        when(commentRepository.findByStatus(eq(CommentStatus.HIDDEN), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(commentWith(CommentStatus.HIDDEN))));
+
+        PageResponse<CommentResponse> page = commentService.listAll(CommentStatus.HIDDEN, new PageParams(0, 10));
+
+        assertThat(page.content()).hasSize(1);
+        assertThat(page.content().get(0).status()).isEqualTo(CommentStatus.HIDDEN);
     }
 
     @Test

@@ -120,7 +120,11 @@ Todos los endpoints cuelgan de `/api/v1`. El detalle de cada uno (campos, valida
 | Comentarios | `GET /comments?productId=` (solo los publicados, no los ocultos) | Público |
 | Comentarios | `POST /comments`, `GET /account/comments` | Usuario |
 | Contacto | `POST /contact-messages`, `POST /newsletter-subscriptions` | Público |
-| Administración | `POST /admin/products`, `POST /admin/categories`, `DELETE /admin/categories/{id}`, `PUT /admin/inventory/{variantId}`, `PUT /admin/users/{id}`, `PUT /admin/comments/{id}` (ocultar o volver a mostrar un comentario) | Administrador |
+| Administración: productos | `POST /admin/products`, `PUT /admin/inventory/{variantId}` (stock) | Administrador |
+| Administración: categorías | `POST /admin/categories`, `DELETE /admin/categories/{id}` | Administrador |
+| Administración: usuarios | `GET /admin/users` (con `search` por nombre o correo, paginado), `PUT /admin/users/{id}` (rol y estado) | Administrador |
+| Administración: comentarios | `GET /admin/comments` (con `status` opcional, paginado), `PUT /admin/comments/{id}` (ocultar o volver a mostrar) | Administrador |
+| Administración: mensajes | `GET /admin/contact-messages` (paginado) | Administrador |
 
 **Respuestas exitosas:** crear devuelve `201` con el recurso creado; consultar y actualizar devuelven `200` con el recurso; borrar devuelve `204` sin cuerpo. Las acciones sin recurso (cambiar contraseña, agregar un favorito, contacto y newsletter) devuelven `{ "message": "..." }`.
 
