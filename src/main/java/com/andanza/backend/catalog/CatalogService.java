@@ -11,7 +11,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -21,12 +23,20 @@ public class CatalogService {
 
     private static final int DEFAULT_PAGE_SIZE = 20;
 
+    // Las tallas numéricas se ordenan como números ("9" antes que "38", "37.5" entre "37" y "38"); las demás, al final.
+    private static final Comparator<String> SIZE_ORDER = Comparator
+            .comparing(CatalogService::sizeAsNumber, Comparator.nullsLast(Comparator.<BigDecimal>naturalOrder()))
+            .thenComparing(Comparator.naturalOrder());
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductVariantRepository variantRepository;
 
-    public CatalogService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+    public CatalogService(ProductRepository productRepository, CategoryRepository categoryRepository,
+                          ProductVariantRepository variantRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.variantRepository = variantRepository;
     }
 
     @Transactional(readOnly = true)
@@ -49,6 +59,24 @@ public class CatalogService {
     @Transactional(readOnly = true)
     public List<CategoryResponse> listCategories() {
         return categoryRepository.findAllByOrderByNameAsc().stream().map(CategoryResponse::from).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public CatalogFilterOptionsResponse getFilterOptions() {
+        List<String> sizes = variantRepository.findDistinctSizes().stream().sorted(SIZE_ORDER).toList();
+        return new CatalogFilterOptionsResponse(
+                variantRepository.findDistinctColors(),
+                sizes,
+                productRepository.findMinPrice(),
+                productRepository.findMaxPrice());
+    }
+
+    private static BigDecimal sizeAsNumber(String size) {
+        try {
+            return new BigDecimal(size.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private Pageable toPageable(CatalogFilterRequest filter) {

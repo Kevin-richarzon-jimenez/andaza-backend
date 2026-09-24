@@ -33,6 +33,11 @@ public class CatalogController {
         return ResponseEntity.ok(catalogService.findById(id));
     }
 
+    @GetMapping("/filter-options")
+    public ResponseEntity<CatalogFilterOptionsResponse> getFilterOptions() {
+        return ResponseEntity.ok(catalogService.getFilterOptions());
+    }
+
     @GetMapping("/categories")
     public ResponseEntity<List<CategoryResponse>> listCategories() {
         return ResponseEntity.ok(catalogService.listCategories());

@@ -110,7 +110,7 @@ Todos los endpoints cuelgan de `/api/v1`. El detalle de cada uno (campos, valida
 
 | Recurso | Endpoints | Acceso |
 |---|---|---|
-| Catálogo | `GET /catalog/products` (filtros y paginación por query params), `GET /catalog/products/{id}`, `GET /catalog/categories` | Público |
+| Catálogo | `GET /catalog/products` (filtros y paginación por query params), `GET /catalog/products/{id}`, `GET /catalog/categories`, `GET /catalog/filter-options` (tallas, colores y rango de precios que existen) | Público |
 | Carrito | `POST /cart/totals` | Público |
 | Autenticación | `POST /auth/register`, `POST /auth/login` | Público |
 | Autenticación | `PUT /auth/password` | Usuario |
