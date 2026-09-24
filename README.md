@@ -29,6 +29,7 @@ La app necesita estas variables (las que no tienen valor por defecto son obligat
 | Variable | Para qué sirve | Por defecto |
 |---|---|---|
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | Conexión a la base de datos | `localhost:5432/andanza`, `postgres` / `postgres` |
+| `DB_POOL_SIZE` | Conexiones máximas a la base por instancia. El Session Pooler de Supabase admite pocas en total (15 en el plan gratis), compartidas por la instancia desplegada y las de cada integrante en local | `5` |
 | `JWT_SECRET` | Secreto con el que se firman los tokens de sesión (mínimo 32 caracteres) | — (obligatoria) |
 | `CORS_ALLOWED_ORIGINS` | Orígenes del frontend autorizados, separados por coma | `http://localhost:5173` |
 | `JWT_EXPIRATION_MINUTES` | Duración de la sesión | `120` |
