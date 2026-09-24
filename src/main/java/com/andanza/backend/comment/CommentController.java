@@ -33,10 +33,10 @@ public class CommentController {
         return ResponseEntity.status(201).body(commentService.create(CurrentUser.id(jwt), request));
     }
 
-    // Público: solo los comentarios aprobados de un producto.
+    // Público: solo los comentarios publicados (no ocultos) de un producto.
     @GetMapping("/comments")
     public ResponseEntity<List<CommentResponse>> listByProduct(@RequestParam UUID productId) {
-        return ResponseEntity.ok(commentService.listApproved(productId));
+        return ResponseEntity.ok(commentService.listPublished(productId));
     }
 
     // Los comentarios del usuario autenticado, en cualquier estado.

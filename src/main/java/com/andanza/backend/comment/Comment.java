@@ -42,7 +42,7 @@ public class Comment {
     private String text;
 
     @Enumerated(EnumType.STRING)
-    private CommentStatus status = CommentStatus.PENDING;
+    private CommentStatus status = CommentStatus.PUBLISHED;
 
     private Instant createdAt = Instant.now();
 }
