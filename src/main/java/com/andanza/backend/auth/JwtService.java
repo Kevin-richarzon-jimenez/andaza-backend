@@ -27,8 +27,6 @@ public class JwtService {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(user.getId().toString())
-                .claim("email", user.getEmail())
-                .claim("role", user.getRole().name())
                 .issuedAt(now)
                 .expiresAt(now.plus(expirationMinutes, ChronoUnit.MINUTES))
                 .build();

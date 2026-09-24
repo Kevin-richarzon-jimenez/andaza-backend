@@ -17,8 +17,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -38,7 +36,8 @@ public class SecurityConfig {
     // Regla por defecto: todo requiere sesión salvo lo que se declara público acá. Así un endpoint
     // nuevo nunca queda abierto por olvido.
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityErrorHandler errorHandler) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityErrorHandler errorHandler,
+                                                   UserJwtAuthenticationConverter jwtConverter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // el token viaja en el header Authorization, no en cookies
                 .cors(Customizer.withDefaults())
@@ -59,17 +58,8 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationEntryPoint(errorHandler)
                         .accessDeniedHandler(errorHandler)
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
         return http.build();
-    }
-
-    private JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter authorities = new JwtGrantedAuthoritiesConverter();
-        authorities.setAuthoritiesClaimName("role");
-        authorities.setAuthorityPrefix("ROLE_");
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(authorities);
-        return converter;
     }
 
     @Bean
