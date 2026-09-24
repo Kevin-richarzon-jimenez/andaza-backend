@@ -31,7 +31,8 @@ La app necesita estas variables (las que no tienen valor por defecto son obligat
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | Conexión a la base de datos | `localhost:5432/andanza`, `postgres` / `postgres` |
 | `JWT_SECRET` | Secreto con el que se firman los tokens de sesión (mínimo 32 caracteres) | — (obligatoria) |
 | `CORS_ALLOWED_ORIGINS` | Orígenes del frontend autorizados, separados por coma | `http://localhost:5173` |
-| `JWT_EXPIRATION_MINUTES` | Duración de la sesión | `480` |
+| `JWT_EXPIRATION_MINUTES` | Duración de la sesión | `120` |
+| `SWAGGER_ENABLED` | Activa Swagger UI y el JSON de la API (en producción, `false`) | `true` |
 | `PORT` | Puerto de la API | `8080` |
 
 Lo más cómodo es un perfil local, un archivo que nunca se sube al repositorio:
@@ -69,7 +70,7 @@ Los endpoints de `/admin` exigen el rol `ADMIN`. Como todo el equipo usa la mism
 
 1. Registrarse con tu correo real: `POST /api/v1/auth/register` (se puede hacer desde Swagger UI).
 2. En Supabase, en el *SQL Editor*, subir ese usuario de rol: `update users set role = 'ADMIN' where email = 'tu@correo.com';`
-3. Volver a iniciar sesión (`POST /api/v1/auth/login`): el token nuevo ya lleva el rol de administrador. El token anterior sigue siendo de cliente.
+3. Listo: el rol se lee de la base en cada petición, así que vale de inmediato, sin volver a iniciar sesión.
 
 Desde ahí, ese administrador puede darle el rol a otras cuentas con `PUT /api/v1/admin/users/{id}`.
 
@@ -145,8 +146,30 @@ Todos los errores responden con la misma estructura. `errors` lista los campos c
 | `405` | Método HTTP no permitido en esa ruta |
 | `409` | Choca con algo que ya existe (correo ya registrado, categoría con productos) |
 | `415` | Tipo de contenido no soportado |
+| `429` | Demasiados intentos de login fallidos seguidos |
 | `422` | Regla de negocio incumplida (stock insuficiente, un id del body que no existe) |
 | `500` | Error inesperado |
+
+## Seguridad
+
+Lo que protege el backend hoy:
+
+- **Contraseñas:** se guardan con BCrypt, nunca en texto plano. Si el correo no existe, el login responde el mismo mensaje y tarda lo mismo, así que no revela qué correos están registrados.
+- **Sesiones:** el token va firmado con `JWT_SECRET`. Sin esa clave nadie puede fabricarlo ni modificarlo (un token alterado, sin firma o firmado con otra clave se rechaza con `401`). Dura 2 horas por defecto.
+- **Rol y estado siempre al día:** el token solo identifica al usuario. El rol y si la cuenta está bloqueada se leen de la base en cada petición, así que bloquear a alguien o quitarle el rol de administrador surte efecto al instante, sin esperar a que su token expire.
+- **Fuerza bruta:** 5 intentos de login fallidos con el mismo correo desde la misma dirección bloquean ese par durante 15 minutos (`429`). Vive en memoria: vale para una sola instancia del backend.
+- **Todo exige sesión** salvo lo que se declara público a mano en `SecurityConfig`, así un endpoint nuevo nunca queda abierto por olvido.
+- **Base de datos:** RLS activado en todas las tablas y consultas parametrizadas (JPA), sin SQL armado a mano.
+- **Actuator:** solo `/actuator/health` está expuesto.
+
+Antes de desplegar:
+
+- Servir la API solo por HTTPS: con HTTP el token viaja en claro.
+- Usar un `JWT_SECRET` propio de producción (`openssl rand -base64 48`), distinto al de desarrollo, guardado como secreto del servicio de hosting y no en un archivo.
+- Cambiar las contraseñas de las cuentas de desarrollo.
+- Poner `SWAGGER_ENABLED=false`.
+- Si hay un proxy delante, configurar `server.forward-headers-strategy=framework` para que el límite de intentos vea la dirección real de cada cliente.
+- En el frontend, tratar el token como una llave: no mostrarlo, no registrarlo en la consola y no insertar contenido de usuarios como HTML.
 
 ## Estructura
 
