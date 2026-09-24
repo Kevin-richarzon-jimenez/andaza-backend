@@ -1,36 +1,42 @@
 package com.andanza.backend.contact;
 
-import com.andanza.backend.exception.BusinessException;
+import com.andanza.backend.exception.ConflictException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
-// Sin BD: no se envía correo real ni se guarda el ticket/suscripción;
-// solo se valida y se simula la respuesta.
 @Service
 public class ContactService {
 
-    // Set en memoria SOLO para poder demostrar la regla de "no duplicados"
-    // dentro de una misma ejecución. No es persistencia real: se reinicia
-    // cada vez que la aplicación se reinicia. ConcurrentHashMap.newKeySet()
-    // porque este service es un singleton compartido entre requests
-    // concurrentes -- un HashSet normal no es seguro ahí.
-    // TODO (BD): reemplazar esto por una tabla de suscriptores.
-    private final Set<String> sessionSubscribers = ConcurrentHashMap.newKeySet();
+    private final ContactMessageRepository contactMessageRepository;
+    private final NewsletterSubscriptionRepository newsletterRepository;
 
-    public String sendMessage(ContactRequest request) {
-        // TODO (BD / notificaciones): enviar el mensaje real (correo, ticket de soporte, etc.)
-        return "TCK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    public ContactService(ContactMessageRepository contactMessageRepository,
+                          NewsletterSubscriptionRepository newsletterRepository) {
+        this.contactMessageRepository = contactMessageRepository;
+        this.newsletterRepository = newsletterRepository;
     }
 
+    // Devuelve el radicado (ticket) del mensaje guardado.
+    // TODO: enviar el aviso por correo al equipo de soporte cuando exista un servicio de correo.
+    @Transactional
+    public String sendMessage(ContactRequest request) {
+        ContactMessage message = new ContactMessage();
+        message.setName(request.name().trim());
+        message.setEmail(request.email().trim());
+        message.setSubject(request.subject().trim());
+        message.setMessage(request.message().trim());
+        contactMessageRepository.save(message);
+        return "TCK-" + message.getId().toString().substring(0, 8).toUpperCase();
+    }
+
+    @Transactional
     public void subscribe(NewsletterRequest request) {
-        String email = request.email().toLowerCase();
-        // add() ya es atómico: si devuelve false es porque ya estaba.
-        // TODO (BD): persistir el correo en la tabla de suscriptores.
-        if (!sessionSubscribers.add(email)) {
-            throw new BusinessException("email", "Este correo ya está suscrito al boletín");
+        String email = request.email().trim().toLowerCase();
+        if (newsletterRepository.existsByEmailIgnoreCase(email)) {
+            throw new ConflictException("email", "Este correo ya está suscrito al boletín");
         }
+        NewsletterSubscription subscription = new NewsletterSubscription();
+        subscription.setEmail(email);
+        newsletterRepository.save(subscription);
     }
 }

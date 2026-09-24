@@ -6,15 +6,16 @@ import jakarta.validation.constraints.Size;
 
 public record ContactRequest(
         @NotBlank(message = "El nombre es obligatorio")
-        @Size(max = 100)
+        @Size(max = 100, message = "El nombre no puede superar los 100 caracteres")
         String name,
 
         @NotBlank(message = "El correo es obligatorio")
         @Email(message = "El correo no tiene un formato válido")
+        @Size(max = 255, message = "El correo no puede superar los 255 caracteres")
         String email,
 
         @NotBlank(message = "El asunto es obligatorio")
-        @Size(max = 120)
+        @Size(max = 120, message = "El asunto no puede superar los 120 caracteres")
         String subject,
 
         @NotBlank(message = "El mensaje no puede estar vacío")
