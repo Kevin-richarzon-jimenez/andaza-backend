@@ -59,10 +59,12 @@ La API queda en `http://localhost:8080`. Al arrancar, Flyway aplica las migracio
 
 El esquema no se toca a mano en Supabase: vive en archivos de migración en `src/main/resources/db/migration`, con el nombre `V<número>__<descripción>.sql`. Flyway los aplica en orden al arrancar y guarda el registro en la tabla `flyway_schema_history`. Hibernate solo **valida** que las entidades coincidan con las tablas (`ddl-auto=validate`).
 
-- Para cambiar el esquema se agrega una migración nueva (`V3__...`); una migración ya aplicada nunca se edita.
+- Para cambiar el esquema se agrega una migración nueva (`V4__...`); una migración ya aplicada nunca se edita.
+- El proyecto incluye `spring-boot-devtools`: con el backend corriendo, cualquier cambio en los archivos lo reinicia solo, y al crear una migración Flyway la aplica al instante en la base compartida. Detén el backend antes de agregar una migración.
 - Las tablas van en inglés, en plural y en snake_case (`products`, `product_variants`); los ids son `uuid`.
 - Toda tabla nueva debe activar `ENABLE ROW LEVEL SECURITY`: Supabase expone el esquema `public` por su API REST, y sin esa línea cualquiera con la clave pública podría leerla o modificarla. El backend se conecta con el rol `postgres` y no se ve afectado. La tabla de historial de Flyway la protege el ajuste de Supabase que activa RLS en toda tabla nueva de `public` (activo en el proyecto del equipo); en otro proyecto, revisar que esté activo.
 - `V2__seed_demo_catalog.sql` carga las categorías base y cinco productos de ejemplo con sus variantes.
+- `V3__publish_comments_immediately.sql` cambia los estados de los comentarios a `PUBLISHED` y `HIDDEN`: se publican al crearse y el administrador puede ocultarlos.
 
 ### Primer administrador
 
@@ -88,7 +90,7 @@ Cada caja es una tabla de Supabase, con los nombres exactos de tablas y columnas
 | `products` | Precio mayor a 0; siempre pertenece a una categoría |
 | `product_variants` | Stock nunca negativo; no se repite la combinación producto + color + talla; se borra con el producto |
 | `favorites` | Un usuario no marca dos veces el mismo producto |
-| `comments` | Calificación de 1 a 5 y texto de 5 a 500 caracteres; `PENDING` hasta que un administrador lo aprueba |
+| `comments` | Calificación de 1 a 5 y texto de 5 a 500 caracteres; se publica al crearse (`PUBLISHED`) y un administrador puede ocultarlo (`HIDDEN`) |
 | `contact_messages` | Mensajes del formulario de contacto, sin relación con usuarios |
 | `newsletter_subscriptions` | Correo único sin distinguir mayúsculas |
 
@@ -114,10 +116,10 @@ Todos los endpoints cuelgan de `/api/v1`. El detalle de cada uno (campos, valida
 | Autenticación | `PUT /auth/password` | Usuario |
 | Direcciones | `GET` y `POST /account/addresses`, `PUT` y `DELETE /account/addresses/{id}` | Usuario |
 | Favoritos | `GET /favorites`, `PUT` y `DELETE /favorites/{productId}` | Usuario |
-| Comentarios | `GET /comments?productId=` (solo los aprobados) | Público |
+| Comentarios | `GET /comments?productId=` (solo los publicados, no los ocultos) | Público |
 | Comentarios | `POST /comments`, `GET /account/comments` | Usuario |
 | Contacto | `POST /contact-messages`, `POST /newsletter-subscriptions` | Público |
-| Administración | `POST /admin/products`, `POST /admin/categories`, `DELETE /admin/categories/{id}`, `PUT /admin/inventory/{variantId}`, `PUT /admin/users/{id}`, `PUT /admin/comments/{id}` | Administrador |
+| Administración | `POST /admin/products`, `POST /admin/categories`, `DELETE /admin/categories/{id}`, `PUT /admin/inventory/{variantId}`, `PUT /admin/users/{id}`, `PUT /admin/comments/{id}` (ocultar o volver a mostrar un comentario) | Administrador |
 
 **Respuestas exitosas:** crear devuelve `201` con el recurso creado; consultar y actualizar devuelven `200` con el recurso; borrar devuelve `204` sin cuerpo. Las acciones sin recurso (cambiar contraseña, agregar un favorito, contacto y newsletter) devuelven `{ "message": "..." }`.
 

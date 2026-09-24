@@ -2,7 +2,7 @@ package com.andanza.backend.admin.comment;
 
 import com.andanza.backend.comment.CommentResponse;
 import com.andanza.backend.comment.CommentService;
-import com.andanza.backend.comment.ModerateCommentRequest;
+import com.andanza.backend.comment.CommentVisibilityRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +26,8 @@ public class AdminCommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CommentResponse> moderate(@PathVariable UUID id,
-                                                    @Valid @RequestBody ModerateCommentRequest request) {
-        return ResponseEntity.ok(commentService.moderate(id, request.approve()));
+    public ResponseEntity<CommentResponse> setVisibility(@PathVariable UUID id,
+                                                         @Valid @RequestBody CommentVisibilityRequest request) {
+        return ResponseEntity.ok(commentService.setVisibility(id, request.visible()));
     }
 }

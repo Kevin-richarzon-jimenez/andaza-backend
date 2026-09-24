@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 // Este service lo usan dos controllers: CommentController (crear y consultar, lado cliente)
-// y AdminCommentController (moderar, lado admin). Todo comentario nuevo queda PENDING hasta que
-// un administrador lo aprueba; solo los aprobados se publican en el producto.
+// y AdminCommentController (ocultar o volver a mostrar, lado admin). Todo comentario se publica al
+// crearse; el administrador puede ocultarlo después y solo los publicados se ven en el producto.
 @Service
 public class CommentService {
 
@@ -45,11 +45,11 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> listApproved(UUID productId) {
+    public List<CommentResponse> listPublished(UUID productId) {
         if (!productRepository.existsById(productId)) {
             throw new NotFoundException("productId", "El producto indicado no existe");
         }
-        return commentRepository.findByProductIdAndStatusOrderByCreatedAtDesc(productId, CommentStatus.APPROVED)
+        return commentRepository.findByProductIdAndStatusOrderByCreatedAtDesc(productId, CommentStatus.PUBLISHED)
                 .stream().map(CommentResponse::from).toList();
     }
 
@@ -60,10 +60,10 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse moderate(UUID commentId, boolean approve) {
+    public CommentResponse setVisibility(UUID commentId, boolean visible) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundException("id", "El comentario indicado no existe"));
-        comment.setStatus(approve ? CommentStatus.APPROVED : CommentStatus.REJECTED);
+        comment.setStatus(visible ? CommentStatus.PUBLISHED : CommentStatus.HIDDEN);
         return CommentResponse.from(comment);
     }
 }
