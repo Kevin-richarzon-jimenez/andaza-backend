@@ -13,4 +13,6 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 
     @Query("select distinct v.size from ProductVariant v")
     List<String> findDistinctSizes();
+
+    boolean existsByProductIdAndColorIgnoreCaseAndSize(UUID productId, String color, String size);
 }
