@@ -6,9 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.UUID;
+
 public record CommentRequest(
-        @NotBlank(message = "El producto es obligatorio")
-        String productId,
+        @NotNull(message = "El producto es obligatorio")
+        UUID productId,
 
         @NotNull(message = "La calificación es obligatoria")
         @Min(value = 1, message = "La calificación mínima es 1 estrella")

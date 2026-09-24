@@ -1,13 +1,16 @@
 package com.andanza.backend.admin.inventory;
 
-import com.andanza.backend.common.MessageResponse;
+import com.andanza.backend.catalog.ProductVariantResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/inventory")
@@ -20,8 +23,10 @@ public class AdminInventoryController {
         this.adminInventoryService = adminInventoryService;
     }
 
-    @PutMapping
-    public ResponseEntity<MessageResponse> updateStock(@Valid @RequestBody AdminInventoryUpdateRequest request) {
-        return ResponseEntity.ok(new MessageResponse(adminInventoryService.updateStock(request)));
+    // El inventario se identifica por la variante (producto + color + talla) a la que pertenece el stock.
+    @PutMapping("/{variantId}")
+    public ResponseEntity<ProductVariantResponse> updateStock(
+            @PathVariable UUID variantId, @Valid @RequestBody AdminInventoryUpdateRequest request) {
+        return ResponseEntity.ok(adminInventoryService.updateStock(variantId, request));
     }
 }

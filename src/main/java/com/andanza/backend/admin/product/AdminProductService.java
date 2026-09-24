@@ -1,58 +1,61 @@
 package com.andanza.backend.admin.product;
 
-import com.andanza.backend.catalog.CatalogService;
+import com.andanza.backend.catalog.Category;
+import com.andanza.backend.catalog.CategoryRepository;
 import com.andanza.backend.catalog.Product;
+import com.andanza.backend.catalog.ProductRepository;
 import com.andanza.backend.catalog.ProductResponse;
+import com.andanza.backend.catalog.ProductVariant;
 import com.andanza.backend.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.Locale;
+import java.util.Set;
 
 @Service
 public class AdminProductService {
 
-    private final CatalogService catalogService;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public AdminProductService(CatalogService catalogService) {
-        this.catalogService = catalogService;
+    public AdminProductService(ProductRepository productRepository, CategoryRepository categoryRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
+    @Transactional
     public ProductResponse create(AdminProductRequest request) {
-        if (!catalogService.categoryExists(request.category())) {
-            throw new BusinessException("category", "Categoría no reconocida: " + request.category());
+        Category category = categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new BusinessException("categoryId", "La categoría indicada no existe"));
+        validateNoDuplicateVariants(request.variants());
+
+        Product product = new Product();
+        product.setName(request.name().trim());
+        product.setBrand(request.brand().trim());
+        product.setDescription(request.description().trim());
+        product.setCategory(category);
+        product.setPrice(request.price());
+        for (ProductVariantRequest variantRequest : request.variants()) {
+            ProductVariant variant = new ProductVariant();
+            variant.setColor(variantRequest.color().trim());
+            variant.setSize(variantRequest.size().trim());
+            variant.setStock(variantRequest.stock());
+            product.addVariant(variant);
         }
-
-        validateNoDuplicateColors(request.variants());
-
-        List<String> colors = request.variants().stream().map(ColorVariantRequest::color).toList();
-        List<String> sizes = request.variants().stream()
-                .flatMap(v -> v.sizes().stream())
-                .distinct()
-                .toList();
-
-        // TODO (BD): persistir el producto y sus variantes (con imagen y stock inicial por talla).
-        String generatedId = "p-" + UUID.randomUUID().toString().substring(0, 8);
-        Product product = new Product(generatedId, request.name(), request.brand(),
-                request.category(), request.price(), colors, sizes);
-
-        // El producto pasa a formar parte del mismo catálogo que ve el
-        // cliente -- así se puede probar de punta a punta (crear producto
-        // en Admin -> verlo/agregarlo al carrito en el catálogo público).
-        catalogService.addProduct(product);
-
-        return new ProductResponse(product.id(), product.name(), product.brand(),
-                product.category(), product.price(), product.colors(), product.sizes());
+        return ProductResponse.from(productRepository.save(product));
     }
 
-    private void validateNoDuplicateColors(List<ColorVariantRequest> variants) {
-        long uniqueColors = variants.stream()
-                .map(v -> v.color().toLowerCase())
-                .collect(Collectors.toSet())
-                .size();
-        if (uniqueColors != variants.size()) {
-            throw new BusinessException("variants", "No puedes repetir el mismo color en dos variantes");
+    private void validateNoDuplicateVariants(List<ProductVariantRequest> variants) {
+        Set<String> seen = new HashSet<>();
+        for (ProductVariantRequest variant : variants) {
+            String key = variant.color().trim().toLowerCase(Locale.ROOT) + "|" + variant.size().trim();
+            if (!seen.add(key)) {
+                throw new BusinessException("variants",
+                        "La variante " + variant.color().trim() + " talla " + variant.size().trim() + " está repetida");
+            }
         }
     }
 }
