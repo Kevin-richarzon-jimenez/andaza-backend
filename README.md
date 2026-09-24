@@ -18,20 +18,20 @@ Este repositorio es el backend. El frontend (React) vive aparte, en [andanza-fro
 ## Requisitos
 
 - Java 21
-- Una base de datos Postgres: local o la del proyecto en Supabase
+- La base de datos PostgreSQL del proyecto en Supabase
 
 ## Configuración
 
-La conexión a la base de datos se define con tres variables: `DB_URL`, `DB_USERNAME` y `DB_PASSWORD`. Sin configurar nada, la app usa `localhost:5432/andanza` con usuario y contraseña `postgres`, lo que sirve para un Postgres local (por ejemplo, en Docker).
+La conexión se define con `SUPABASE_DB_URL`, `SUPABASE_DB_USERNAME` y `SUPABASE_DB_PASSWORD`. No hay fallback a PostgreSQL local.
 
 Para conectarse a otra base, como la de Supabase, se crea un perfil local:
 
 1. Copiar `src/main/resources/application-local.properties.example` como `src/main/resources/application-local.properties`. Este archivo está en `.gitignore`: nunca se sube al repositorio.
-2. Completar `DB_URL`, `DB_USERNAME` y `DB_PASSWORD` con las credenciales reales.
+2. Completar `DB_URL`, `DB_USERNAME` y `DB_PASSWORD` con las credenciales reales del Session Pooler.
 
 Si el sistema ya tiene definida alguna de esas variables de entorno, esa tiene prioridad sobre el archivo.
 
-**Supabase:** usar las credenciales del *Session Pooler*, que se encuentran en el dashboard del proyecto: botón **Connect** → **Direct connection** → pestaña **Session pooler**. La conexión directa solo funciona por IPv6, que la mayoría de las redes no soporta. El archivo de ejemplo incluye el paso a paso.
+**Supabase:** este backend usa Spring Data JPA sobre PostgreSQL. Debes usar las credenciales del *Session Pooler*, que se encuentran en el dashboard del proyecto: botón **Connect** → **Direct connection** → pestaña **Session pooler**. La conexión directa solo funciona por IPv6, que la mayoría de las redes no soporta. La API key de Supabase no reemplaza la contraseña PostgreSQL y no se usa para JPA.
 
 ## Ejecutar
 
