@@ -2,6 +2,7 @@ package com.andanza.backend.auth;
 
 import com.andanza.backend.exception.ConflictException;
 import com.andanza.backend.exception.ForbiddenException;
+import com.andanza.backend.exception.TooManyRequestsException;
 import com.andanza.backend.exception.UnauthorizedException;
 import com.andanza.backend.user.AccountStatus;
 import com.andanza.backend.user.User;
@@ -16,16 +17,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
+
+    private static final String IP = "127.0.0.1";
 
     @Mock
     private UserRepository userRepository;
@@ -38,7 +44,8 @@ class AuthServiceTest {
 
     @BeforeEach
     void setUp() {
-        authService = new AuthService(userRepository, passwordEncoder, jwtService);
+        authService = new AuthService(userRepository, passwordEncoder, jwtService, new LoginAttemptLimiter());
+        lenient().when(jwtService.generateToken(any())).thenReturn("token");
     }
 
     private RegisterRequest registration(String email) {
@@ -52,14 +59,18 @@ class AuthServiceTest {
         user.setLastName("Lopez");
         user.setPasswordHash(passwordEncoder.encode(rawPassword));
         user.setAccountStatus(status);
-        user.setId(java.util.UUID.randomUUID());
+        user.setId(UUID.randomUUID());
         return user;
+    }
+
+    private void anaExists(AccountStatus status) {
+        when(userRepository.findByEmailIgnoreCase("ana@example.com"))
+                .thenReturn(Optional.of(customer("Segura123", status)));
     }
 
     @Test
     void registerStoresTheEmailInLowercaseAndNeverTheRawPassword() {
         when(userRepository.existsByEmailIgnoreCase("ana@example.com")).thenReturn(false);
-        when(jwtService.generateToken(any())).thenReturn("token");
 
         authService.register(registration("Ana@Example.com"));
 
@@ -81,14 +92,11 @@ class AuthServiceTest {
 
     @Test
     void loginGivesTheSameErrorForAWrongPasswordAndAnUnknownEmail() {
-        when(userRepository.findByEmailIgnoreCase("ana@example.com"))
-                .thenReturn(Optional.of(customer("Segura123", AccountStatus.ACTIVE)));
+        anaExists(AccountStatus.ACTIVE);
         when(userRepository.findByEmailIgnoreCase("nadie@example.com")).thenReturn(Optional.empty());
 
-        Throwable wrongPassword = org.assertj.core.api.Assertions.catchThrowable(
-                () -> authService.login(new LoginRequest("ana@example.com", "Otra12345")));
-        Throwable unknownEmail = org.assertj.core.api.Assertions.catchThrowable(
-                () -> authService.login(new LoginRequest("nadie@example.com", "Segura123")));
+        Throwable wrongPassword = catchThrowable(() -> authService.login(new LoginRequest("ana@example.com", "Otra12345"), IP));
+        Throwable unknownEmail = catchThrowable(() -> authService.login(new LoginRequest("nadie@example.com", "Segura123"), IP));
 
         assertThat(wrongPassword).isInstanceOf(UnauthorizedException.class);
         assertThat(unknownEmail).isInstanceOf(UnauthorizedException.class);
@@ -97,10 +105,48 @@ class AuthServiceTest {
 
     @Test
     void loginRejectsABlockedAccountEvenWithTheRightPassword() {
-        when(userRepository.findByEmailIgnoreCase("ana@example.com"))
-                .thenReturn(Optional.of(customer("Segura123", AccountStatus.BLOCKED)));
+        anaExists(AccountStatus.BLOCKED);
 
-        assertThatThrownBy(() -> authService.login(new LoginRequest("ana@example.com", "Segura123")))
+        assertThatThrownBy(() -> authService.login(new LoginRequest("ana@example.com", "Segura123"), IP))
                 .isInstanceOf(ForbiddenException.class);
+    }
+
+    @Test
+    void loginBlocksTheAddressAfterFiveFailuresEvenWithTheRightPassword() {
+        anaExists(AccountStatus.ACTIVE);
+        for (int i = 0; i < 5; i++) {
+            assertThatThrownBy(() -> authService.login(new LoginRequest("ana@example.com", "Otra12345"), IP))
+                    .isInstanceOf(UnauthorizedException.class);
+        }
+
+        assertThatThrownBy(() -> authService.login(new LoginRequest("ana@example.com", "Segura123"), IP))
+                .isInstanceOf(TooManyRequestsException.class);
+    }
+
+    @Test
+    void theBlockOnOneAddressDoesNotAffectAnother() {
+        anaExists(AccountStatus.ACTIVE);
+        for (int i = 0; i < 5; i++) {
+            assertThatThrownBy(() -> authService.login(new LoginRequest("ana@example.com", "Otra12345"), IP))
+                    .isInstanceOf(UnauthorizedException.class);
+        }
+
+        assertThat(authService.login(new LoginRequest("ana@example.com", "Segura123"), "10.0.0.9").token())
+                .isEqualTo("token");
+    }
+
+    @Test
+    void aSuccessfulLoginResetsTheFailureCount() {
+        anaExists(AccountStatus.ACTIVE);
+        for (int i = 0; i < 4; i++) {
+            assertThatThrownBy(() -> authService.login(new LoginRequest("ana@example.com", "Otra12345"), IP))
+                    .isInstanceOf(UnauthorizedException.class);
+        }
+        authService.login(new LoginRequest("ana@example.com", "Segura123"), IP);
+
+        for (int i = 0; i < 4; i++) {
+            assertThatThrownBy(() -> authService.login(new LoginRequest("ana@example.com", "Otra12345"), IP))
+                    .isInstanceOf(UnauthorizedException.class);
+        }
     }
 }

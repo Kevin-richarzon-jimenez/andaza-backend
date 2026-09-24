@@ -119,6 +119,7 @@ public class GlobalExceptionHandler {
             case CONFLICT -> "Conflicto";
             case UNAUTHORIZED -> "No autenticado";
             case FORBIDDEN -> "Sin permiso";
+            case TOO_MANY_REQUESTS -> "Demasiados intentos";
             default -> "Regla de negocio";
         };
     }

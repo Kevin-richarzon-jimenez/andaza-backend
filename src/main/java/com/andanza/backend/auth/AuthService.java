@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,11 +22,16 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final LoginAttemptLimiter loginAttemptLimiter;
+    private final String dummyHash;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService,
+                       LoginAttemptLimiter loginAttemptLimiter) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.loginAttemptLimiter = loginAttemptLimiter;
+        this.dummyHash = passwordEncoder.encode(UUID.randomUUID().toString());
     }
 
     @Transactional
@@ -44,11 +50,23 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public AuthResponse login(LoginRequest request) {
-        // El mismo mensaje para correo inexistente y contraseña incorrecta: no revela cuáles correos están registrados.
-        User user = userRepository.findByEmailIgnoreCase(request.email().trim())
-                .filter(found -> passwordEncoder.matches(request.password(), found.getPasswordHash()))
-                .orElseThrow(() -> new UnauthorizedException("password", "Correo o contraseña incorrectos"));
+    public AuthResponse login(LoginRequest request, String clientIp) {
+        String email = request.email().trim().toLowerCase();
+        String attemptKey = email + "|" + clientIp;
+        loginAttemptLimiter.checkAllowed(attemptKey);
+
+        // Si el correo no existe se compara contra un hash falso: así el login tarda lo mismo y el tiempo
+        // de respuesta no revela cuáles correos están registrados. El mensaje también es el mismo.
+        Optional<User> found = userRepository.findByEmailIgnoreCase(email);
+        String hash = found.map(User::getPasswordHash).orElse(dummyHash);
+        boolean valid = passwordEncoder.matches(request.password(), hash) && found.isPresent();
+        if (!valid) {
+            loginAttemptLimiter.recordFailure(attemptKey);
+            throw new UnauthorizedException("password", "Correo o contraseña incorrectos");
+        }
+
+        User user = found.get();
+        loginAttemptLimiter.reset(attemptKey);
         if (user.getAccountStatus() == AccountStatus.BLOCKED) {
             throw new ForbiddenException("email", "Tu cuenta está bloqueada. Contacta a soporte.");
         }
