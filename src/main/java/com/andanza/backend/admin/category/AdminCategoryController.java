@@ -1,6 +1,6 @@
 package com.andanza.backend.admin.category;
 
-import com.andanza.backend.common.MessageResponse;
+import com.andanza.backend.catalog.CategoryResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/categories")
@@ -23,13 +25,12 @@ public class AdminCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponse> create(@Valid @RequestBody AdminCategoryRequest request) {
-        String id = adminCategoryService.create(request);
-        return ResponseEntity.status(201).body(new MessageResponse("Categoría creada con id " + id));
+    public ResponseEntity<CategoryResponse> create(@Valid @RequestBody AdminCategoryRequest request) {
+        return ResponseEntity.status(201).body(adminCategoryService.create(request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         adminCategoryService.delete(id);
         return ResponseEntity.noContent().build();
     }

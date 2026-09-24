@@ -1,28 +1,28 @@
 package com.andanza.backend.admin.inventory;
 
-import com.andanza.backend.catalog.CatalogService;
-import com.andanza.backend.catalog.Product;
+import com.andanza.backend.catalog.ProductVariant;
+import com.andanza.backend.catalog.ProductVariantRepository;
+import com.andanza.backend.catalog.ProductVariantResponse;
+import com.andanza.backend.exception.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-// Sin BD: valida que el producto exista de verdad (contra el catálogo),
-// que la combinación color/talla sea una variante real de ese producto,
-// y confirma la operación; no actualiza ningún stock real.
-// TODO (BD): actualizar el stock real en la tabla "inventory"
-// (product_id, color, size, stock).
+import java.util.UUID;
+
 @Service
 public class AdminInventoryService {
 
-    private final CatalogService catalogService;
+    private final ProductVariantRepository variantRepository;
 
-    public AdminInventoryService(CatalogService catalogService) {
-        this.catalogService = catalogService;
+    public AdminInventoryService(ProductVariantRepository variantRepository) {
+        this.variantRepository = variantRepository;
     }
 
-    public String updateStock(AdminInventoryUpdateRequest request) {
-        Product product = catalogService.findById(request.productId());
-        catalogService.validateVariant(product, request.color(), request.size());
-
-        return "Stock actualizado a " + request.stock() + " unidades para "
-                + request.productId() + " (" + request.color() + ", talla " + request.size() + ")";
+    @Transactional
+    public ProductVariantResponse updateStock(UUID variantId, AdminInventoryUpdateRequest request) {
+        ProductVariant variant = variantRepository.findById(variantId)
+                .orElseThrow(() -> new NotFoundException("variantId", "La variante indicada no existe"));
+        variant.setStock(request.stock());
+        return ProductVariantResponse.from(variant);
     }
 }

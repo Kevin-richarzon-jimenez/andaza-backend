@@ -1,8 +1,8 @@
 package com.andanza.backend.admin.comment;
 
+import com.andanza.backend.comment.CommentResponse;
 import com.andanza.backend.comment.CommentService;
 import com.andanza.backend.comment.ModerateCommentRequest;
-import com.andanza.backend.common.MessageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/admin/comments")
@@ -24,9 +26,8 @@ public class AdminCommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MessageResponse> moderate(@PathVariable String id,
-                                                       @Valid @RequestBody ModerateCommentRequest request) {
-        String result = commentService.moderate(id, request.approve());
-        return ResponseEntity.ok(new MessageResponse(result));
+    public ResponseEntity<CommentResponse> moderate(@PathVariable UUID id,
+                                                    @Valid @RequestBody ModerateCommentRequest request) {
+        return ResponseEntity.ok(commentService.moderate(id, request.approve()));
     }
 }

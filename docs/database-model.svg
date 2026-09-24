@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1509 732" width="1509" role="img" aria-label="Modelo de datos de Andanza: 9 tablas y las llaves foráneas que las conectan">
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<text x="24" y="30" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468"><tspan font-weight="600" fill="#0E7C70">PK</tspan> llave primaria   <tspan font-weight="600" fill="#18262A">FK</tspan> llave foránea   <tspan font-weight="600" fill="#566468">UK</tspan> valor único   <tspan font-weight="600" fill="#0E7C70">1 ── N</tspan> una fila de la izquierda tiene muchas de la derecha</text>
+<text x="24" y="50" font-family="'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="#566468">Sobre cada línea va la columna FK que la sostiene. Las filas resaltadas son llaves foráneas.</text>
+<line x1="70" y1="284.0" x2="70" y2="346.0" stroke="#0E7C70" stroke-width="1.6"/>
+<circle cx="70" cy="284.0" r="3" fill="#0E7C70"/>
+<circle cx="70" cy="346.0" r="3" fill="#0E7C70"/>
+<text x="84.0" y="299.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">1</text>
+<text x="84.0" y="338.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">N</text>
+<rect x="101.8" y="305.0" width="60.3" height="20" rx="4" fill="#FFFFFF" stroke="#B9C6C2"/><text x="132.0" y="319.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11.5" fill="#18262A">user_id</text>
+<path d="M285.2,119.0 C346.2,119.0 346.2,167.0 407.2,167.0" fill="none" stroke="#0E7C70" stroke-width="1.6"/>
+<circle cx="285.2" cy="119.0" r="3" fill="#0E7C70"/>
+<circle cx="407.2" cy="167.0" r="3" fill="#0E7C70"/>
+<text x="298.2" y="112.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">1</text>
+<text x="394.2" y="160.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">N</text>
+<rect x="316.1" y="133.0" width="60.3" height="20" rx="4" fill="#FFFFFF" stroke="#B9C6C2"/><text x="346.2" y="147.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11.5" fill="#18262A">user_id</text>
+<path d="M285.2,119.0 C346.2,119.0 346.2,347.0 407.2,347.0" fill="none" stroke="#0E7C70" stroke-width="1.6"/>
+<circle cx="285.2" cy="119.0" r="3" fill="#0E7C70"/>
+<circle cx="407.2" cy="347.0" r="3" fill="#0E7C70"/>
+<text x="298.2" y="112.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">1</text>
+<text x="394.2" y="340.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">N</text>
+<rect x="316.1" y="223.0" width="60.3" height="20" rx="4" fill="#FFFFFF" stroke="#B9C6C2"/><text x="346.2" y="237.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11.5" fill="#18262A">user_id</text>
+<path d="M790.4,299.0 C729.4,299.0 729.4,189.0 668.4,189.0" fill="none" stroke="#0E7C70" stroke-width="1.6"/>
+<circle cx="790.4" cy="299.0" r="3" fill="#0E7C70"/>
+<circle cx="668.4" cy="189.0" r="3" fill="#0E7C70"/>
+<text x="777.4" y="292.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">1</text>
+<text x="681.4" y="182.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">N</text>
+<rect x="688.9" y="234.0" width="81.0" height="20" rx="4" fill="#FFFFFF" stroke="#B9C6C2"/><text x="729.4" y="248.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11.5" fill="#18262A">product_id</text>
+<path d="M790.4,299.0 C729.4,299.0 729.4,369.0 668.4,369.0" fill="none" stroke="#0E7C70" stroke-width="1.6"/>
+<circle cx="790.4" cy="299.0" r="3" fill="#0E7C70"/>
+<circle cx="668.4" cy="369.0" r="3" fill="#0E7C70"/>
+<text x="777.4" y="292.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">1</text>
+<text x="681.4" y="362.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">N</text>
+<rect x="688.9" y="324.0" width="81.0" height="20" rx="4" fill="#FFFFFF" stroke="#B9C6C2"/><text x="729.4" y="338.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11.5" fill="#18262A">product_id</text>
+<line x1="836.4" y1="196.0" x2="836.4" y2="258.0" stroke="#0E7C70" stroke-width="1.6"/>
+<circle cx="836.4" cy="196.0" r="3" fill="#0E7C70"/>
+<circle cx="836.4" cy="258.0" r="3" fill="#0E7C70"/>
+<text x="850.4" y="211.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">1</text>
+<text x="850.4" y="250.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">N</text>
+<rect x="854.4" y="217.0" width="87.9" height="20" rx="4" fill="#FFFFFF" stroke="#B9C6C2"/><text x="898.4" y="231.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11.5" fill="#18262A">category_id</text>
+<path d="M1051.6,299.0 C1137.6,299.0 1137.6,321.0 1223.6,321.0" fill="none" stroke="#0E7C70" stroke-width="1.6"/>
+<circle cx="1051.6" cy="299.0" r="3" fill="#0E7C70"/>
+<circle cx="1223.6" cy="321.0" r="3" fill="#0E7C70"/>
+<text x="1064.6" y="292.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">1</text>
+<text x="1199.2" y="314.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#0E7C70">1..N</text>
+<rect x="1097.1" y="300.0" width="81.0" height="20" rx="4" fill="#FFFFFF" stroke="#B9C6C2"/><text x="1137.6" y="314.0" text-anchor="middle" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11.5" fill="#18262A">product_id</text>
+<g>
+<rect x="24.0" y="78.0" width="261.2" height="206" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M24.0,108 L24.0,84 Q24.0,78 30.0,78 L279.2,78 Q285.2,78 285.2,84 L285.2,108 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="34.0" y="98" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">users</text>
+<text x="34.0" y="123" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="130.4" y="123" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="275.2" y="123" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<text x="34.0" y="145" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(40)</text>
+<text x="130.4" y="145" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">first_name</text>
+<text x="34.0" y="167" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(40)</text>
+<text x="130.4" y="167" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">last_name</text>
+<text x="34.0" y="189" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(255)</text>
+<text x="130.4" y="189" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">email</text>
+<text x="275.2" y="189" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#566468">UK</text>
+<text x="34.0" y="211" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(255)</text>
+<text x="130.4" y="211" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">password_hash</text>
+<text x="34.0" y="233" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(20)</text>
+<text x="130.4" y="233" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">role</text>
+<text x="34.0" y="255" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(20)</text>
+<text x="130.4" y="255" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">account_status</text>
+<text x="34.0" y="277" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">timestamptz</text>
+<text x="130.4" y="277" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">created_at</text>
+</g>
+<g>
+<rect x="24.0" y="346.0" width="261.2" height="272" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M24.0,376 L24.0,352 Q24.0,346 30.0,346 L279.2,346 Q285.2,346 285.2,352 L285.2,376 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="34.0" y="366" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">addresses</text>
+<text x="34.0" y="391" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="130.4" y="391" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="275.2" y="391" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<rect x="25.0" y="398" width="259.2" height="22" fill="#EAF6F3"/>
+<text x="34.0" y="413" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="130.4" y="413" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">user_id</text>
+<text x="275.2" y="413" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#18262A">FK</text>
+<text x="34.0" y="435" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(40)</text>
+<text x="130.4" y="435" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">label</text>
+<text x="34.0" y="457" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(80)</text>
+<text x="130.4" y="457" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">recipient_name</text>
+<text x="34.0" y="479" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(150)</text>
+<text x="130.4" y="479" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">street</text>
+<text x="34.0" y="501" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(60)</text>
+<text x="130.4" y="501" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">city</text>
+<text x="34.0" y="523" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(60)</text>
+<text x="130.4" y="523" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">department</text>
+<text x="34.0" y="545" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(20)</text>
+<text x="130.4" y="545" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">phone</text>
+<text x="34.0" y="567" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(6)</text>
+<text x="130.4" y="567" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">postal_code</text>
+<text x="34.0" y="589" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">boolean</text>
+<text x="130.4" y="589" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">is_default</text>
+<text x="34.0" y="611" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">timestamptz</text>
+<text x="130.4" y="611" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">created_at</text>
+</g>
+<g>
+<rect x="790.4" y="78.0" width="261.2" height="118" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M790.4,108 L790.4,84 Q790.4,78 796.4,78 L1045.6,78 Q1051.6,78 1051.6,84 L1051.6,108 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="800.4" y="98" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">categories</text>
+<text x="800.4" y="123" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="896.8" y="123" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="1041.6" y="123" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<text x="800.4" y="145" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(40)</text>
+<text x="896.8" y="145" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">name</text>
+<text x="1041.6" y="145" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#566468">UK</text>
+<text x="800.4" y="167" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(200)</text>
+<text x="896.8" y="167" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">description</text>
+<text x="800.4" y="189" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">timestamptz</text>
+<text x="896.8" y="189" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">created_at</text>
+</g>
+<g>
+<rect x="790.4" y="258.0" width="261.2" height="184" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M790.4,288 L790.4,264 Q790.4,258 796.4,258 L1045.6,258 Q1051.6,258 1051.6,264 L1051.6,288 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="800.4" y="278" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">products</text>
+<text x="800.4" y="303" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="904.0" y="303" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="1041.6" y="303" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<text x="800.4" y="325" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(100)</text>
+<text x="904.0" y="325" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">name</text>
+<text x="800.4" y="347" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(60)</text>
+<text x="904.0" y="347" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">brand</text>
+<text x="800.4" y="369" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(1000)</text>
+<text x="904.0" y="369" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">description</text>
+<rect x="791.4" y="376" width="259.2" height="22" fill="#EAF6F3"/>
+<text x="800.4" y="391" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="904.0" y="391" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">category_id</text>
+<text x="1041.6" y="391" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#18262A">FK</text>
+<text x="800.4" y="413" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">numeric(12,2)</text>
+<text x="904.0" y="413" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">price</text>
+<text x="800.4" y="435" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">timestamptz</text>
+<text x="904.0" y="435" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">created_at</text>
+</g>
+<g>
+<rect x="1223.6" y="258.0" width="261.2" height="140" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M1223.6,288 L1223.6,264 Q1223.6,258 1229.6,258 L1478.8,258 Q1484.8,258 1484.8,264 L1484.8,288 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="1233.6" y="278" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">product_variants</text>
+<text x="1233.6" y="303" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="1322.8" y="303" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="1474.8" y="303" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<rect x="1224.6" y="310" width="259.2" height="22" fill="#EAF6F3"/>
+<text x="1233.6" y="325" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="1322.8" y="325" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">product_id</text>
+<text x="1474.8" y="325" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#18262A">FK</text>
+<text x="1233.6" y="347" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(40)</text>
+<text x="1322.8" y="347" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">color</text>
+<text x="1233.6" y="369" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(10)</text>
+<text x="1322.8" y="369" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">size</text>
+<text x="1233.6" y="391" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">integer</text>
+<text x="1322.8" y="391" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">stock</text>
+</g>
+<g>
+<rect x="407.2" y="104.0" width="261.2" height="118" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M407.2,134 L407.2,110 Q407.2,104 413.2,104 L662.4,104 Q668.4,104 668.4,110 L668.4,134 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="417.2" y="124" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">favorites</text>
+<text x="417.2" y="149" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="506.4" y="149" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="658.4" y="149" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<rect x="408.2" y="156" width="259.2" height="22" fill="#EAF6F3"/>
+<text x="417.2" y="171" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="506.4" y="171" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">user_id</text>
+<text x="658.4" y="171" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#18262A">FK</text>
+<rect x="408.2" y="178" width="259.2" height="22" fill="#EAF6F3"/>
+<text x="417.2" y="193" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="506.4" y="193" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">product_id</text>
+<text x="658.4" y="193" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#18262A">FK</text>
+<text x="417.2" y="215" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">timestamptz</text>
+<text x="506.4" y="215" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">created_at</text>
+</g>
+<g>
+<rect x="407.2" y="284.0" width="261.2" height="184" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M407.2,314 L407.2,290 Q407.2,284 413.2,284 L662.4,284 Q668.4,284 668.4,290 L668.4,314 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="417.2" y="304" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">comments</text>
+<text x="417.2" y="329" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="513.6" y="329" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="658.4" y="329" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<rect x="408.2" y="336" width="259.2" height="22" fill="#EAF6F3"/>
+<text x="417.2" y="351" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="513.6" y="351" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">user_id</text>
+<text x="658.4" y="351" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#18262A">FK</text>
+<rect x="408.2" y="358" width="259.2" height="22" fill="#EAF6F3"/>
+<text x="417.2" y="373" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="513.6" y="373" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">product_id</text>
+<text x="658.4" y="373" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#18262A">FK</text>
+<text x="417.2" y="395" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">integer</text>
+<text x="513.6" y="395" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">rating</text>
+<text x="417.2" y="417" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(500)</text>
+<text x="513.6" y="417" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">text</text>
+<text x="417.2" y="439" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(20)</text>
+<text x="513.6" y="439" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">status</text>
+<text x="417.2" y="461" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">timestamptz</text>
+<text x="513.6" y="461" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">created_at</text>
+</g>
+<g>
+<rect x="407.2" y="542.0" width="261.2" height="162" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M407.2,572 L407.2,548 Q407.2,542 413.2,542 L662.4,542 Q668.4,542 668.4,548 L668.4,572 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="417.2" y="562" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">contact_messages</text>
+<text x="417.2" y="587" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="520.8" y="587" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="658.4" y="587" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<text x="417.2" y="609" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(100)</text>
+<text x="520.8" y="609" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">name</text>
+<text x="417.2" y="631" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(255)</text>
+<text x="520.8" y="631" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">email</text>
+<text x="417.2" y="653" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(120)</text>
+<text x="520.8" y="653" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">subject</text>
+<text x="417.2" y="675" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(1000)</text>
+<text x="520.8" y="675" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">message</text>
+<text x="417.2" y="697" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">timestamptz</text>
+<text x="520.8" y="697" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">created_at</text>
+</g>
+<g>
+<rect x="790.4" y="542.0" width="261.2" height="96" rx="6" fill="#FFFFFF" stroke="#B9C6C2"/>
+<path d="M790.4,572 L790.4,548 Q790.4,542 796.4,542 L1045.6,542 Q1051.6,542 1051.6,548 L1051.6,572 Z" fill="#DDF1EC" stroke="#B9C6C2"/>
+<text x="800.4" y="562" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="13.5" font-weight="600" fill="#18262A">newsletter_subscriptions</text>
+<text x="800.4" y="587" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">uuid</text>
+<text x="896.8" y="587" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="600" fill="#18262A">id</text>
+<text x="1041.6" y="587" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#0E7C70">PK</text>
+<text x="800.4" y="609" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">varchar(255)</text>
+<text x="896.8" y="609" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">email</text>
+<text x="1041.6" y="609" text-anchor="end" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="11" font-weight="600" fill="#566468">UK</text>
+<text x="800.4" y="631" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" fill="#566468">timestamptz</text>
+<text x="896.8" y="631" font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace" font-size="12" font-weight="400" fill="#18262A">created_at</text>
+</g>
+<text x="407.2" y="520.0" font-family="'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" fill="#566468">Formularios del sitio: no se relacionan con ninguna otra tabla</text>
+</svg>
