@@ -192,7 +192,7 @@ El `Dockerfile` compila con el Maven Wrapper y ejecuta con Java 21, así que sir
    - `SERVER_FORWARD_HEADERS_STRATEGY=framework`, para que el límite de intentos de login vea la dirección real de cada cliente detrás del proxy de Render.
 4. Con la URL que asigne Render, poner `VITE_API_URL` en el frontend (`https://<servicio>.onrender.com/api/v1`) y volver a desplegarlo.
 
-El plan gratuito de Render se duerme tras unos 15 minutos sin tráfico y la primera petición después tarda cerca de un minuto. Tiene 512 MB de memoria: el `Dockerfile` limita la JVM para ese tamaño (con esos límites la suite completa de pruebas de la API consumió un máximo de unos 320 MB). Un monitor externo, como UptimeRobot, que consulte `/actuator/health` cada 10 minutos lo mantiene despierto y, como esa consulta usa la base, evita que Supabase pause el proyecto por inactividad.
+El plan gratuito de Render se duerme tras unos 15 minutos sin tráfico y despertarlo es lento: con solo 0.1 CPU, Spring Boot tardó 198 s en arrancar en un contenedor con esos mismos límites (`docker run --cpus=0.1 --memory=512m`), y 103 s con `-XX:TieredStopAtLevel=1`, que es lo que usa el `Dockerfile`. Ni `spring.main.lazy-initialization` ni un heap inicial mayor cambiaron esos tiempos. Tiene 512 MB de memoria: el `Dockerfile` limita la JVM para ese tamaño y en esas pruebas el contenedor arrancó y respondió sin quedarse sin memoria. El frontend avisa mientras el servidor despierta y reintenta las consultas (ver su README). Un monitor externo, como UptimeRobot, que consulte `/actuator/health` cada 10 minutos lo mantiene despierto y, como esa consulta usa la base, evita que Supabase pause el proyecto por inactividad.
 
 ## Estructura
 
