@@ -31,6 +31,7 @@ La app necesita estas variables (las que no tienen valor por defecto son obligat
 | `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | Conexión a la base de datos | `localhost:5432/andanza`, `postgres` / `postgres` |
 | `DB_POOL_SIZE` | Conexiones máximas a la base por instancia. El Session Pooler de Supabase admite pocas en total (15 en el plan gratis), compartidas por la instancia desplegada y las de cada integrante en local | `5` |
 | `JWT_SECRET` | Secreto con el que se firman los tokens de sesión (mínimo 32 caracteres) | — (obligatoria) |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_BUCKET` | Almacenamiento de las imágenes de los productos (ver [Imágenes de los productos](#imágenes-de-los-productos)). Opcionales: sin ellas el backend arranca igual, pero subir imágenes responde `503`. La llave de servicio da acceso total al proyecto de Supabase: nunca se comitea | — / — / `product-images` |
 | `CORS_ALLOWED_ORIGINS` | Orígenes del frontend autorizados, separados por coma | `http://localhost:5173` |
 | `JWT_EXPIRATION_MINUTES` | Duración de la sesión | `120` |
 | `SWAGGER_ENABLED` | Activa Swagger UI y el JSON de la API (en producción, `false`) | `true` |
@@ -77,11 +78,20 @@ Los endpoints de `/admin` exigen el rol `ADMIN`. Como todo el equipo usa la mism
 
 Desde ahí, ese administrador puede darle el rol a otras cuentas con `PUT /api/v1/admin/users/{id}`.
 
+### Imágenes de los productos
+
+Las fotos se guardan en un bucket **público** de [Supabase Storage](https://supabase.com/docs/guides/storage) y en la base solo queda su dirección (`product_images`). No se guardan en el servidor porque el disco del plan gratuito de Render se borra en cada reinicio. Para activarlas:
+
+1. En Supabase, *Storage → New bucket*, con el nombre `product-images` y marcado como **Public bucket**.
+2. Definir `SUPABASE_URL` (la URL del proyecto, en *Settings → API*) y `SUPABASE_SERVICE_KEY` (la llave secreta del mismo lugar: `service_role` o `sb_secret_...`) en `application-local.properties` y en las variables de entorno de Render. Esa llave da acceso total al proyecto: nunca va en el repositorio.
+
+Cada foto pertenece a un **color** del producto (las tallas de un mismo color comparten galería) y hay hasta 5 por color; la de menor `sortOrder` es la portada. El navegador las reduce a WebP y manda dos tamaños (la ficha y una miniatura para las tarjetas), así que el backend solo valida: revisa el contenido del archivo (no el nombre ni el tipo declarado), el tamaño (800 KB la grande, 200 KB la miniatura) y que el producto tenga ese color. Al borrar una imagen o un producto se borran también sus archivos.
+
 ### Modelo de datos
 
 Cada caja es una tabla de Supabase, con los nombres exactos de tablas y columnas; las líneas son las llaves foráneas. Un producto guarda lo común (nombre, marca, precio) y cada combinación de color y talla es una variante con su propio stock; favoritos y comentarios cuelgan del producto, no de la variante.
 
-![Modelo de datos de Andanza: 9 tablas y sus llaves foráneas](docs/database-model.svg)
+![Modelo de datos de Andanza: 10 tablas y sus llaves foráneas](docs/database-model.svg)
 
 | Tabla | Reglas que la base hace cumplir |
 |---|---|
@@ -90,6 +100,7 @@ Cada caja es una tabla de Supabase, con los nombres exactos de tablas y columnas
 | `categories` | Nombre único sin distinguir mayúsculas; no se borra si tiene productos |
 | `products` | Precio mayor a 0; siempre pertenece a una categoría |
 | `product_variants` | Stock nunca negativo; no se repite la combinación producto + color + talla; se borra con el producto |
+| `product_images` | Fotos de un producto, cada una de un color; solo guarda las direcciones públicas (los archivos viven en Supabase Storage); se borra con el producto |
 | `favorites` | Un usuario no marca dos veces el mismo producto |
 | `comments` | Calificación de 1 a 5 y texto de 5 a 500 caracteres; se publica al crearse (`PUBLISHED`) y un administrador puede ocultarlo (`HIDDEN`) |
 | `contact_messages` | Mensajes del formulario de contacto, sin relación con usuarios |
@@ -121,6 +132,7 @@ Todos los endpoints cuelgan de `/api/v1`. El detalle de cada uno (campos, valida
 | Comentarios | `POST /comments`, `GET /account/comments` | Usuario |
 | Contacto | `POST /contact-messages`, `POST /newsletter-subscriptions` | Público |
 | Administración: productos | `POST /admin/products`, `PUT` y `DELETE /admin/products/{id}`, `POST /admin/products/{id}/variants` (agregar color y talla), `PUT /admin/inventory/{variantId}` (stock) | Administrador |
+| Administración: imágenes | `POST /admin/products/{id}/images?color=...` (multipart: `image` y `thumbnail`, ambas WebP), `PUT /admin/products/{id}/images/{imageId}/cover` (hacerla portada de su color), `DELETE /admin/products/{id}/images/{imageId}` | Administrador |
 | Administración: categorías | `POST /admin/categories`, `DELETE /admin/categories/{id}` | Administrador |
 | Administración: usuarios | `GET /admin/users` (con `search` por nombre o correo, paginado), `PUT /admin/users/{id}` (rol y estado) | Administrador |
 | Administración: comentarios | `GET /admin/comments` (con `status` opcional, paginado), `PUT /admin/comments/{id}` (ocultar o volver a mostrar) | Administrador |
@@ -189,6 +201,7 @@ El `Dockerfile` compila con el Maven Wrapper y ejecuta con Java 21, así que sir
    - `JWT_SECRET`: uno propio de producción, distinto al de desarrollo.
    - `CORS_ALLOWED_ORIGINS`: la URL del frontend (por ejemplo, `https://mi-tienda.vercel.app`).
    - `SWAGGER_ENABLED=false`.
+   - `SUPABASE_URL` y `SUPABASE_SERVICE_KEY`, para las imágenes (ver [Imágenes de los productos](#imágenes-de-los-productos)).
    - `SERVER_FORWARD_HEADERS_STRATEGY=framework`, para que el límite de intentos de login vea la dirección real de cada cliente detrás del proxy de Render.
 4. Con la URL que asigne Render, poner `VITE_API_URL` en el frontend (`https://<servicio>.onrender.com/api/v1`) y volver a desplegarlo.
 
@@ -206,6 +219,7 @@ src/main/java/com/andanza/backend/
 ├── admin/<dominio>/                 endpoints de administración, agrupados por dominio
 ├── exception/                       BusinessException y subclases, GlobalExceptionHandler, ErrorResponse
 ├── validation/                      validaciones personalizadas reutilizables
+├── storage/                         almacenamiento de archivos (Supabase Storage)
 ├── common/                          DTOs usados por más de un dominio
 └── config/                          seguridad, CORS, Flyway y OpenAPI
 
