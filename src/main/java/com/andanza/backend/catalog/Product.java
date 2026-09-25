@@ -47,6 +47,10 @@ public class Product {
     @OrderBy("color ASC, size ASC")
     private List<ProductVariant> variants = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    @OrderBy("color ASC, sortOrder ASC, id ASC")
+    private List<ProductImage> images = new ArrayList<>();
+
     public void addVariant(ProductVariant variant) {
         variant.setProduct(this);
         variants.add(variant);

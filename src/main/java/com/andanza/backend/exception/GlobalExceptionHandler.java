@@ -14,6 +14,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.LinkedHashMap;
@@ -77,6 +79,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(body);
     }
 
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ErrorResponse> handleMissingPart(MissingServletRequestPartException ex) {
+        ErrorResponse body = ErrorResponse.of(
+                HttpStatus.BAD_REQUEST.value(), "Datos inválidos", "Falta el archivo '" + ex.getRequestPartName() + "'",
+                Map.of(ex.getRequestPartName(), "Este archivo es obligatorio"));
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleUploadTooLarge(MaxUploadSizeExceededException ex) {
+        ErrorResponse body = ErrorResponse.of(
+                HttpStatus.CONTENT_TOO_LARGE.value(), "Archivo demasiado grande", "La imagen pesa demasiado.",
+                Map.of("image", "La imagen pesa demasiado"));
+        return ResponseEntity.status(HttpStatus.CONTENT_TOO_LARGE).body(body);
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(NoResourceFoundException ex) {
         ErrorResponse body = ErrorResponse.of(
@@ -120,6 +138,8 @@ public class GlobalExceptionHandler {
             case UNAUTHORIZED -> "No autenticado";
             case FORBIDDEN -> "Sin permiso";
             case TOO_MANY_REQUESTS -> "Demasiados intentos";
+            case BAD_GATEWAY -> "Servicio externo";
+            case SERVICE_UNAVAILABLE -> "Servicio no disponible";
             default -> "Regla de negocio";
         };
     }

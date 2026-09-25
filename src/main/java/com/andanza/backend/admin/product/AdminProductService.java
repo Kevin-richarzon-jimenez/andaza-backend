@@ -26,12 +26,14 @@ public class AdminProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductVariantRepository variantRepository;
+    private final ProductImageService imageService;
 
     public AdminProductService(ProductRepository productRepository, CategoryRepository categoryRepository,
-                               ProductVariantRepository variantRepository) {
+                               ProductVariantRepository variantRepository, ProductImageService imageService) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.variantRepository = variantRepository;
+        this.imageService = imageService;
     }
 
     @Transactional
@@ -69,10 +71,13 @@ public class AdminProductService {
         return ProductResponse.from(product);
     }
 
-    // Borra el producto con sus variantes; los favoritos y comentarios se borran con él (ON DELETE CASCADE).
+    // Borra el producto con sus variantes e imágenes (y los archivos de estas); los favoritos y comentarios se borran
+    // con él (ON DELETE CASCADE).
     @Transactional
     public void delete(UUID id) {
-        productRepository.delete(findProduct(id));
+        Product product = findProduct(id);
+        imageService.deleteFilesOfProductAfterCommit(product);
+        productRepository.delete(product);
     }
 
     @Transactional
