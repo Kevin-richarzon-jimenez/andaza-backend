@@ -2,8 +2,9 @@ package com.andanza.backend.catalog;
 
 import com.andanza.backend.exception.BusinessException;
 import com.andanza.backend.exception.NotFoundException;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -112,15 +113,20 @@ public class CatalogService {
             boolean byColor = filter.colors() != null && !filter.colors().isEmpty();
             boolean bySize = filter.sizes() != null && !filter.sizes().isEmpty();
             if (byColor || bySize) {
-                // Un solo join: color y talla se exigen sobre la misma variante.
-                Join<Product, ProductVariant> variant = root.join("variants");
+                // Una sola subconsulta: color y talla se exigen sobre la misma variante. Con EXISTS el producto no
+                // se repite por cada variante que coincide, así que no hace falta DISTINCT sobre todas sus columnas.
+                Subquery<Integer> matchingVariant = query.subquery(Integer.class);
+                Root<ProductVariant> variant = matchingVariant.from(ProductVariant.class);
+                List<Predicate> variantPredicates = new ArrayList<>();
+                variantPredicates.add(cb.equal(variant.get("product"), root));
                 if (byColor) {
-                    predicates.add(cb.lower(variant.get("color")).in(filter.colors().stream().map(this::lower).toList()));
+                    variantPredicates.add(cb.lower(variant.get("color")).in(filter.colors().stream().map(this::lower).toList()));
                 }
                 if (bySize) {
-                    predicates.add(variant.get("size").in(filter.sizes()));
+                    variantPredicates.add(variant.get("size").in(filter.sizes()));
                 }
-                query.distinct(true);
+                matchingVariant.select(cb.literal(1)).where(variantPredicates.toArray(new Predicate[0]));
+                predicates.add(cb.exists(matchingVariant));
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         };
