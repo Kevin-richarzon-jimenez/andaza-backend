@@ -40,6 +40,9 @@ class AdminProductServiceTest {
     @Mock
     private ProductVariantRepository variantRepository;
 
+    @Mock
+    private ProductImageService imageService;
+
     @InjectMocks
     private AdminProductService adminProductService;
 
@@ -149,11 +152,12 @@ class AdminProductServiceTest {
     }
 
     @Test
-    void deletesAnExistingProduct() {
+    void deletesAnExistingProductAndItsImageFiles() {
         Product product = existingProduct();
 
         adminProductService.delete(productId);
 
+        verify(imageService).deleteFilesOfProductAfterCommit(product);
         verify(productRepository).delete(product);
     }
 

@@ -34,6 +34,17 @@ DB_USERNAME=postgres.[YOUR-DB-ID]
 DB_PASSWORD=[YOUR-PASSWORD]
 
 # -----------------------------------------------------------------------------
+# Imágenes de productos (Supabase Storage) - opcional
+# -----------------------------------------------------------------------------
+# Sin esto el backend arranca igual, pero subir imágenes responde 503.
+# 1. En Supabase: Storage -> New bucket, con el nombre product-images y marcado como "Public bucket".
+# 2. SUPABASE_URL es la URL del proyecto (Settings -> API -> Project URL), sin nada al final.
+# 3. SUPABASE_SERVICE_KEY es la llave secreta del proyecto (Settings -> API: "service_role" o "sb_secret_...").
+#    Da acceso total a tu proyecto: solo va en este archivo y en las variables de Render, nunca en el repo ni en el chat.
+SUPABASE_URL=https://[YOUR-PROJECT-ID].supabase.co
+SUPABASE_SERVICE_KEY=[YOUR-SERVICE-KEY]
+
+# -----------------------------------------------------------------------------
 # Sesiones (JWT)
 # -----------------------------------------------------------------------------
 # Secreto con el que se firman los tokens de sesión. Es obligatorio y debe tener al

@@ -11,7 +11,8 @@ public record ProductResponse(
         String description,
         CategoryResponse category,
         BigDecimal price,
-        List<ProductVariantResponse> variants
+        List<ProductVariantResponse> variants,
+        List<ProductImageResponse> images
 ) {
 
     public static ProductResponse from(Product product) {
@@ -22,6 +23,7 @@ public record ProductResponse(
                 product.getDescription(),
                 CategoryResponse.from(product.getCategory()),
                 product.getPrice(),
-                product.getVariants().stream().map(ProductVariantResponse::from).toList());
+                product.getVariants().stream().map(ProductVariantResponse::from).toList(),
+                product.getImages().stream().map(ProductImageResponse::from).toList());
     }
 }
